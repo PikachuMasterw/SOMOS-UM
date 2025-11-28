@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudante - Somos Um</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 1. CSS do Módulo João IA -->
+    <link rel="stylesheet" href="public/modules/joao-ia/joao-ia.css">
+    <!-- 2. Biblioteca de Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+
+<style>
+        /* ========== VARIÁVEIS E RESET (Idêntico à Home/Educador) ========== */
+        :root {
+            --color-primary-terracotta: #A55734;
+            --color-background-deep: #6F2626;
+            --color-accent-gold: #FFD700;
+            --color-text-dark: #2C2C2C;
+            --color-card-light: #F7EEDD;
+            --color-contrast-green: #4B5320;
+            --color-african-blue: #1E3A5F;
+            --color-african-purple: #5D3A6F;
+            
+            --bg-primary: var(--color-background-deep);
+            --bg-secondary: white;
+            --bg-tertiary: #f8f9fa;
+            --text-primary: var(--color-text-dark);
+            --text-secondary: white;
+            --accent-color: var(--color-primary-terracotta);
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: var(--transition);
+            scroll-behavior: smooth;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Patterns Decorativos */
+        .african-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .pattern-1 {
+            background-image: radial-gradient(circle, var(--color-accent-gold) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* ========== NAVBAR ========== */
+        .nav-bar {
+            width: calc(100% - 40px);
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            margin-bottom: 20px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-bar.hidden { transform: translateY(-100px); }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            min-height: 60px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fugaz One', cursive;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 10px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+        }
+
+        .nav-links a.active {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+            border: 2px solid var(--accent-color);
+        }
+
+        .nav-links i { margin-right: 8px; }
+
+        /* ========== CONTAINER PRINCIPAL ========== */
+        .container {
+            position: relative;
+            background-color: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            z-index: 10;
+            border: 1px solid var(--border-color);
+            margin-top: 100px;
+            min-height: 80vh;
+        }
+
+        /* ========== HEADER DA PÁGINA (Mesmo estilo do Educador) ========== */
+        .page-header {
+            position: relative;
+            overflow: visible !important;
+            padding: 20px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            border-bottom: 3px solid var(--border-color);
+            min-height: 150px;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite linear;
+            z-index: 1;
+        }
+
+        .header-logo {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Breakpoints de Responsividade (Mesmo do Educador) */
+        @media (min-width: 1200px) {
+            .page-header {
+                padding: 25px 20px;
+                min-height: 180px;
+            }
+            .header-logo {
+                max-width: 500px;
+                transform: scale(0.9);
+            }
+        }
+
+        @media (max-width: 1199px) and (min-width: 769px) {
+            .page-header {
+                padding: 20px 15px;
+                min-height: 160px;
+            }
+            .header-logo {
+                max-width: 400px;
+                transform: scale(0.8);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 15px 10px;
+                min-height: 140px;
+            }
+            .header-logo {
+                max-width: 300px;
+                transform: scale(0.7);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header {
+                padding: 12px 8px;
+                min-height: 120px;
+            }
+            .header-logo {
+                max-width: 250px;
+                transform: scale(0.6);
+            }
+        }
+
+        /* ========== LAYOUT DE CONTEÚDO ========== */
+        .content-wrapper {
+            padding: 30px;
+            display: grid;
+            gap: 40px;
+        }
+
+        /* Seções Gerais */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .section-header i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-right: 15px;
+        }
+
+        .section-header h2 {
+            font-family: 'Fugaz One', cursive;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+
+        /* Card de Destaque / Continuação */
+        .continue-studying {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .continue-info h3 {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .progress-simple {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-contrast-green);
+            width: 60%;
+        }
+
+        .btn-continue {
+            padding: 10px 25px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-continue:hover {
+            background: #8C472A;
+        }
+
+        /* Grid de Módulos de Estudo */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .module-header {
+            height: 100px;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            opacity: 0.9;
+        }
+
+        .module-body {
+            padding: 20px;
+        }
+
+        .module-tag {
+            background: var(--bg-tertiary);
+            color: #666;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .module-desc {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .module-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .module-link:hover { text-decoration: underline; }
+
+        /* Ferramentas de Estudo Simples */
+        .tools-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .tool-box {
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tool-box:hover {
+            background: white;
+            border-color: var(--accent-color);
+            transform: scale(1.02);
+        }
+
+        .tool-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .tool-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .tool-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Material de Apoio (Lista simples) */
+        .resources-list {
+            list-style: none;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .resource-item:last-child { border-bottom: none; }
+
+        .resource-item:hover {
+            background: white;
+            padding-left: 20px;
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            margin-right: 15px;
+        }
+
+        .resource-info h4 { font-size: 1rem; margin-bottom: 3px; }
+        .resource-info span { font-size: 0.85rem; color: #666; }
+        
+        .resource-action {
+            margin-left: auto;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .tools-section { grid-template-columns: 1fr; }
+            .continue-studying { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .btn-continue { width: 100%; }
+        }
+
+        @media (max-width: 600px) {
+            .nav-links { display: none; }
+            .toggle-btn { display: flex !important; }
+            .content-wrapper { padding: 20px; }
+        }
+
+        .toggle-btn {
+            background: none;
+            border: 2px solid var(--accent-color);
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<script
+        src="public/modules/joao-ia/joao-ia.js"
+        data-gemini-key="AIzaSyDyCyKyVKWULk6wF_aMIeyr0GijrL0Stbg"
+        data-bot-name="João"
+        data-theme="auto"
+        data-position="bottom-right"
+        data-auto-init="true"
+    ></script>
+<body>
+    <div class="african-pattern pattern-1"></div>
+
+    <!-- NavBar -->
+    <nav class="nav-bar" id="navBar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">SU</div>
+                <span>Somos Um</span>
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#" class="active"><i class="fas fa-user-graduate"></i> Estudante</a></li>
+                <li><a href="biblio.html"><i class="fas fa-book"></i> Biblioteca</a></li>
+                <li><a href="comun.html"><i class="fas fa-users"></i> Comunidade</a></li>
+            </ul>
+
+            <button class="toggle-btn" id="toggleBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header Simples e Eficiente -->
+        <header class="page-header">
+            <img src="public/assets/img/icons/logo_estudante.png" alt="Logo Somos Um" class="header-logo">
+        </header>
+
+        <div class="content-wrapper">
+            
+            <!-- 1. Painel de Continuidade (Simples) -->
+            <section>
+                <div class="section-header">
+                    <i class="fas fa-play-circle"></i>
+                    <h2>Continuar Estudando</h2>
+                </div>
+                <div class="continue-studying">
+                    <div class="continue-info">
+                        <h3>História da África: Impérios Antigos</h3>
+                        <p class="progress-simple">Você parou no Módulo 2: O Império de Mali</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <button class="btn-continue">Retomar Aula <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <!-- 2. Conteúdos Curriculares (Organizados por Tema) -->
+            <section>
+                <div class="section-header">
+                    <i class="fas fa-book-reader"></i>
+                    <h2>Conteúdo Curricular</h2>
+                </div>
+                <div class="modules-grid">
+                    <!-- Card 1 -->
+                    <div class="module-card">
+                        <div class="module-header" style="background: #A55734;">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <div class="module-body">
+                            <span class="module-tag">História</span>
+                            <h3 class="module-title">Resistência e Quilombos</h3>
+                            <p class="module-desc">A formação dos quilombos, a liderança de Zumbi e Dandara e o impacto na sociedade colonial.</p>
+                            <a href="#" class="module-link">Acessar Conteúdo <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="module-card">
+                        <div class="module-header" style="background: #4B5320;">
+                            <i class="fas fa-pen-fancy"></i>
+                        </div>
+                        <div class="module-body">
+                            <span class="module-tag">Literatura</span>
+                            <h3 class="module-title">Autores Negros Brasileiros</h3>
+                            <p class="module-desc">Vida e obra de Machado de Assis, Lima Barreto, Carolina Maria de Jesus e contemporâneos.</p>
+                            <a href="#" class="module-link">Acessar Conteúdo <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="module-card">
+                        <div class="module-header" style="background: #1E3A5F;">
+                            <i class="fas fa-drum"></i>
+                        </div>
+                        <div class="module-body">
+                            <span class="module-tag">Cultura</span>
+                            <h3 class="module-title">Artes e Festas Populares</h3>
+                            <p class="module-desc">Entenda as origens do Samba, Maracatu, Capoeira e Congada.</p>
+                            <a href="#" class="module-link">Acessar Conteúdo <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Ferramentas de Estudo Práticas -->
+            <section>
+                <div class="section-header">
+                    <i class="fas fa-toolbox"></i>
+                    <h2>Ferramentas de Estudo</h2>
+                </div>
+                <div class="tools-section">
+                    <div class="tool-box" onclick="alert('Abrindo sistema de Flashcards...')">
+                        <div class="tool-icon"><i class="fas fa-layer-group"></i></div>
+                        <h3 class="tool-title">Flashcards</h3>
+                        <p class="tool-desc">Revise conceitos e datas importantes de forma rápida.</p>
+                    </div>
+
+                    <div class="tool-box" onclick="alert('Abrindo Quiz de revisão...')">
+                        <div class="tool-icon"><i class="fas fa-question-circle"></i></div>
+                        <h3 class="tool-title">Quiz de Revisão</h3>
+                        <p class="tool-desc">Teste seus conhecimentos com perguntas de vestibulares anteriores.</p>
+                    </div>
+
+                    <div class="tool-box" onclick="window.location.href='biblio.html'">
+                        <div class="tool-icon"><i class="fas fa-atlas"></i></div>
+                        <h3 class="tool-title">Glossário & Referências</h3>
+                        <p class="tool-desc">Consulte termos históricos e bibliografia recomendada.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Materiais de Apoio (Downloads Rápidos) -->
+            <section>
+                <div class="section-header">
+                    <i class="fas fa-file-download"></i>
+                    <h2>Materiais de Apoio</h2>
+                </div>
+                <ul class="resources-list">
+                    <li class="resource-item">
+                        <div class="resource-icon"><i class="fas fa-file-pdf"></i></div>
+                        <div class="resource-info">
+                            <h4>Resumo: Revoltas do Período Regencial</h4>
+                            <span>PDF • 2.5 MB</span>
+                        </div>
+                        <a href="#" class="resource-action"><i class="fas fa-download"></i></a>
+                    </li>
+                    <li class="resource-item">
+                        <div class="resource-icon"><i class="fas fa-file-powerpoint"></i></div>
+                        <div class="resource-info">
+                            <h4>Mapa Mental: Diáspora Africana</h4>
+                            <span>PPTX • 4.1 MB</span>
+                        </div>
+                        <a href="#" class="resource-action"><i class="fas fa-download"></i></a>
+                    </li>
+                    <li class="resource-item">
+                        <div class="resource-icon"><i class="fas fa-video"></i></div>
+                        <div class="resource-info">
+                            <h4>Vídeo-aula: Geografia do Continente Africano</h4>
+                            <span>Link Externo</span>
+                        </div>
+                        <a href="#" class="resource-action"><i class="fas fa-external-link-alt"></i></a>
+                    </li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Script Simples para Menu Mobile -->
+    <script>
+        const toggleBtn = document.getElementById('toggleBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        toggleBtn.addEventListener('click', () => {
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '70px';
+                navLinks.style.right = '20px';
+                navLinks.style.background = 'white';
+                navLinks.style.padding = '20px';
+                navLinks.style.borderRadius = '10px';
+                navLinks.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                navLinks.style.width = '200px';
+                navLinks.style.zIndex = '1001';
+            }
+        });
+
+        // Scroll Navbar Effect
+        let lastScroll = 0;
+        const navbar = document.getElementById('navBar');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                navbar.classList.add('hidden');
+            } else {
+                navbar.classList.remove('hidden');
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>

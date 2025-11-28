@@ -1,0 +1,349 @@
+/* ========== MÓDULO JOÃO IA - ESTILOS COM CAMINHOS CORRETOS ========== */
+.joao-ia-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.joao-ia-toggle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #A55734;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.joao-ia-toggle:hover {
+    transform: scale(1.1);
+    background: #8C472A;
+}
+
+.joao-ia-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    height: 450px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+.joao-ia-theme-dark .joao-ia-window {
+    background: #1e1e1e;
+    border: 1px solid #444;
+}
+
+.joao-ia-header {
+    background: #A55734;
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.joao-ia-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.joao-ia-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.joao-ia-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.joao-ia-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f8f9fa;
+}
+
+.joao-ia-theme-dark .joao-ia-messages {
+    background: #2d2d2d;
+    color: #e0e0e0;
+}
+
+.joao-ia-message {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.joao-ia-bot-message {
+    align-self: flex-start;
+    background: white;
+    border-top-left-radius: 5px;
+    border: 1px solid #e0e0e0;
+    color: #333;
+}
+
+.joao-ia-theme-dark .joao-ia-bot-message {
+    background: #1e1e1e;
+    border: 1px solid #444;
+    color: #e0e0e0;
+}
+
+.joao-ia-user-message {
+    align-self: flex-end;
+    background: #A55734;
+    color: white;
+    border-top-right-radius: 5px;
+}
+
+.joao-ia-input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #e0e0e0;
+    background: white;
+}
+
+.joao-ia-theme-dark .joao-ia-input-area {
+    background: #1e1e1e;
+    border-top: 1px solid #444;
+}
+
+.joao-ia-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px;
+    outline: none;
+    background: white;
+    color: #2C2C2C;
+    font-weight: 500;
+}
+
+.joao-ia-theme-dark .joao-ia-input {
+    background: #2d2d2d;
+    border: 1px solid #444;
+    color: #e0e0e0;
+}
+
+.joao-ia-input:focus {
+    border-color: #A55734;
+}
+
+.joao-ia-send {
+    background: #A55734;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.joao-ia-send:hover {
+    background: #8C472A;
+}
+
+/* ========== AVATAR COM CAMINHO CORRETO ========== */
+.joao-ia-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #A55734; /* Cor de fallback */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+
+    /* 🆕 Fallback hierárquico para imagem - CAMINHO CORRETO */
+    background-image: 
+        url('./assets/images/joao-avatar.png'),     /* 1º: Módulo local */
+        url('../assets/images/joao-avatar.png'),    /* 2º: Parent folder */
+        url('../../assets/images/joao-avatar.png'), /* 3º: Grandparent folder */
+        url('/modules/joao-ia/assets/images/joao-avatar.png'); /* 4º: Absoluto */
+    /* REMOVIDO: SVG fallback com letra J */
+}
+
+.joao-ia-avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.joao-ia-avatar::before,
+.joao-ia-avatar::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Se ainda persistir, forçar que o avatar não mostre texto */
+.joao-ia-avatar {
+    color: transparent !important;
+    font-size: 0 !important;
+    text-indent: -9999px !important;
+    overflow: hidden;
+}
+
+/* Estados do avatar */
+.joao-ia-avatar:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+/* Tema escuro para avatar */
+.joao-ia-theme-dark .joao-ia-avatar {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.joao-ia-theme-dark .joao-ia-avatar:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Typing Indicator - CORRIGIDO (não fica preso) */
+.joao-ia-typing {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    opacity: 0.7;
+}
+
+.joao-ia-typing-dot {
+    width: 8px;
+    height: 8px;
+    background: #aaa;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: joao-ia-typing 1.4s infinite ease-in-out;
+}
+
+.joao-ia-typing-dot:nth-child(1) { animation-delay: 0s; }
+.joao-ia-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.joao-ia-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes joao-ia-typing {
+    0%, 60%, 100% { 
+        transform: translateY(0); 
+        opacity: 0.4; 
+    }
+    30% { 
+        transform: translateY(-5px); 
+        opacity: 1; 
+    }
+}
+
+.joao-ia-typing[hidden] {
+    display: none !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .joao-ia-container {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+    }
+    
+    .joao-ia-window {
+        width: calc(100vw - 40px);
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+    }
+    
+    .joao-ia-toggle {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .joao-ia-window {
+        height: 400px;
+        bottom: 70px;
+    }
+    
+    .joao-ia-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .joao-ia-message {
+        max-width: 90%;
+        font-size: 0.85rem;
+    }
+}
+
+/* Animações */
+.joao-ia-avatar,
+.joao-ia-toggle,
+.joao-ia-send {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scrollbar personalizada */
+.joao-ia-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.joao-ia-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.joao-ia-messages::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.joao-ia-theme-dark .joao-ia-messages::-webkit-scrollbar-thumb {
+    background: #555;
+}
