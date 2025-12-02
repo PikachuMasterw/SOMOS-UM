@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educador - Somos Um</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 1. CSS do Módulo João IA -->
+    <link rel="stylesheet" href="public/modules/joao-ia/joao-ia.css">
+    <!-- 2. Biblioteca de Ícones (Font Awesome) -->
+    <!-- LINHA CORRETA: -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Paleta de Cores Inspirada em Terra e Ouro/Vermelho Queimado (Culturas Afro-Brasileiras) */
+        :root {
+            --color-primary-terracotta: #A55734; /* Terracota/Laranja Queimado */
+            --color-background-deep: #6F2626; /* Vermelho Queimado Profundo (Fundo) */
+            --color-accent-gold: #FFD700; /* Ouro/Riqueza Cultural */
+            --color-text-dark: #2C2C2C;
+            --color-card-light: #F7EEDD; /* Bege/Ocre Quente (Contraste) */
+            --color-contrast-green: #4B5320; /* Verde Oliva Escuro */
+            --color-african-blue: #1E3A5F; /* Azul Africano */
+            --color-african-purple: #5D3A6F; /* Roxo Africano */
+            
+            /* Variáveis para sistema de temas */
+            --bg-primary: var(--color-background-deep);
+            --bg-secondary: white;
+            --bg-tertiary: #f8f9fa;
+            --text-primary: var(--color-text-dark);
+            --text-secondary: white;
+            --accent-color: var(--color-primary-terracotta);
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dark-mode {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #ffffff;
+            --accent-color: var(--color-primary-terracotta);
+            --border-color: #444;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .high-contrast {
+            --bg-primary: #000000;
+            --bg-secondary: #000000;
+            --bg-tertiary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #ffffff;
+            --accent-color: #ffffff;
+            --border-color: #ffffff;
+            --shadow: 0 0 0 2px #ffffff;
+        }
+        
+        .high-contrast.dark-mode {
+            --bg-primary: #000000;
+            --bg-secondary: #000000;
+            --bg-tertiary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #ffffff;
+            --accent-color: #ffffff;
+            --border-color: #ffffff;
+            --shadow: 0 0 0 2px #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        /* Elementos decorativos africanos */
+        .african-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+        }
+        
+        .pattern-1 {
+            background-image: radial-gradient(circle, var(--color-accent-gold) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .pattern-2 {
+            background-image: 
+                linear-gradient(45deg, transparent 49%, var(--color-african-blue) 49%, var(--color-african-blue) 51%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, var(--color-african-purple) 49%, var(--color-african-purple) 51%, transparent 51%);
+            background-size: 30px 30px;
+        }
+        
+        /* Padrões de tecidos africanos */
+        .kente-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.08;
+        }
+        
+        .kente-1 {
+            background: 
+                linear-gradient(90deg, transparent 50%, var(--color-accent-gold) 50%, var(--color-accent-gold) 60%, transparent 60%) 0 0/100px 100px,
+                linear-gradient(0deg, transparent 50%, var(--color-accent-gold) 50%, var(--color-accent-gold) 60%, transparent 60%) 0 0/100px 100px,
+                linear-gradient(90deg, transparent 30%, var(--color-primary-terracotta) 30%, var(--color-primary-terracotta) 40%, transparent 40%) 0 0/50px 50px,
+                linear-gradient(0deg, transparent 30%, var(--color-primary-terracotta) 30%, var(--color-primary-terracotta) 40%, transparent 40%) 0 0/50px 50px;
+        }
+        
+        .kente-2 {
+            background: 
+                linear-gradient(45deg, transparent 45%, var(--color-african-blue) 45%, var(--color-african-blue) 55%, transparent 55%) 0 0/60px 60px,
+                linear-gradient(-45deg, transparent 45%, var(--color-african-purple) 45%, var(--color-african-purple) 55%, transparent 55%) 0 0/60px 60px;
+        }
+        
+        /* ========== NAVBAR ATUALIZADA ========== */
+        .nav-bar {
+            width: calc(100% - 40px);
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            margin-bottom: 20px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-bar.hidden {
+            transform: translateY(-100px);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            min-height: 60px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fugaz One', cursive;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+        }
+
+        .nav-links i {
+            margin-right: 8px;
+        }
+
+        /* Botão de toggle para mobile */
+        .toggle-btn {
+            background: none;
+            border: 2px solid var(--accent-color);
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+            transform: rotate(90deg);
+        }
+        
+        .nav-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+        
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-links.show {
+            display: flex !important;
+            animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .nav-links.hide {
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+        
+        .nav-links.collapsed {
+            transform: translateY(-10px);
+            opacity: 0.8;
+        }
+        
+        .nav-links li {
+            margin-bottom: 0;
+            flex-shrink: 0;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+        
+        .nav-links a:hover {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+            border: 1px solid var(--accent-color);
+        }
+        
+        .nav-links a.active {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+            border: 2px solid var(--accent-color);
+        }
+        
+        .nav-links i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+        
+        .biblioteca-btn a {
+            background: var(--color-contrast-green);
+            color: white;
+            border: 2px solid var(--color-contrast-green);
+        }
+        
+        .biblioteca-btn a:hover {
+            background: #3c441a;
+            border: 2px solid #3c441a;
+        }
+        
+        .config-btn a {
+            background: #9C27B0;
+            color: white;
+            border: 2px solid #9C27B0;
+        }
+        
+        .config-btn a:hover {
+            background: #8E24AA;
+            border: 2px solid #8E24AA;
+        }
+        
+        .help-btn a {
+            background: var(--color-accent-gold);
+            color: var(--color-text-dark);
+            border: 2px solid var(--color-accent-gold);
+        }
+        
+        .help-btn a:hover {
+            background: #e0be00;
+            border: 2px solid #e0be00;
+        }
+        
+        /* Área da Conta do Usuário - LADO DIREITO */
+        .user-account {
+            position: relative;
+            margin-left: auto; /* Isso empurra a conta para a direita */
+        }
+        
+        .user-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: 2px solid var(--accent-color);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .user-btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--bg-secondary);
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .user-name {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            min-width: 200px;
+            padding: 10px 0;
+            margin-top: 10px;
+            display: none;
+            z-index: 1002;
+            border: 1px solid var(--border-color);
+            animation: dropdownFade 0.3s ease;
+        }
+        
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .user-dropdown.show {
+            display: block;
+        }
+        
+        .user-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--bg-secondary);
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 8px 0;
+        }
+        
+        /* Main Content Styles */
+        .container {
+            background-color: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+            border: 1px solid var(--border-color);
+            margin-top: 100px;
+        }
+        
+        .header {
+            position: relative;
+            overflow: visible !important; /* Impede cortes */
+            padding: 20px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            border-bottom: 3px solid var(--border-color);
+            min-height: 150px; /* Altura mínima */
+        }
+        
+        .header-logo {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header::before {
+            z-index: 1;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .header h1 {
+            display: none;
+        }
+        
+        /* Seções da Página do Educador */
+        .educador-section {
+            padding: 50px 30px;
+            background: var(--bg-tertiary);
+            border-radius: 15px;
+            margin: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+        
+        .educador-section h2 {
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-family: 'DoubleBass', 'Fugaz One', cursive;
+            font-weight: 700;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 15px;
+        }
+        
+        .educador-section h3 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        /* Grid de Recursos */
+        .recursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .recurso-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .recurso-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent-color);
+        }
+        
+        .recurso-card h4 {
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .recurso-card h4 i {
+            margin-right: 12px;
+            font-size: 1.6rem;
+        }
+        
+        .recurso-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            flex-grow: 1;
+            font-weight: 600;
+        }
+        
+        .recurso-card .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+        }
+        
+        .btn-primary:hover {
+            background: #8C472A;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Construtor de Planos de Aula */
+        .construtor-plano {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--border-color);
+            margin-top: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(165, 87, 52, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        /* Calendário Interativo */
+        .calendario-interativo {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--border-color);
+            margin-top: 30px;
+        }
+        
+        .calendario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        
+        .calendario-dia {
+            padding: 15px 10px;
+            text-align: center;
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .calendario-dia.evento {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+            cursor: pointer;
+        }
+        
+        .calendario-dia.evento:hover {
+            background: #8C472A;
+            transform: scale(1.05);
+        }
+        
+        .calendario-dia-nome {
+            font-weight: 700;
+            color: var(--accent-color);
+            text-align: center;
+            padding: 10px;
+        }
+        
+        /* Área de Downloads */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .download-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .download-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+        
+        .download-card h4 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .download-card p {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        /* Modal de Configurações */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            animation: modalFade 0.3s;
+            color: var(--text-primary);
+            border: 3px solid var(--accent-color);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .config-modal-content {
+            max-width: 600px;
+            text-align: left;
+        }
+        
+        .config-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-tertiary);
+        }
+        
+        .config-section h3 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .config-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+        
+        /* Botões interruptor corrigidos */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            vertical-align: middle;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+            border: 2px solid #ccc;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        select {
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--bg-secondary);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        @keyframes modalFade {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal h2 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-family: 'DoubleBass', 'Fugaz One', cursive;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .modal p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+        
+        .close-button {
+            background-color: var(--accent-color);
+            color: var(--bg-secondary);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            border: 2px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
+        
+        .close-button:hover {
+            background-color: var(--bg-secondary);
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--bg-tertiary);
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-family: 'DoubleBass', 'Fugaz One', cursive;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        /* Direitos autorais */
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Indicador de Carregamento */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .loader-content {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 3px solid var(--accent-color);
+        }
+        
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--bg-tertiary);
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast de Feedback */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            display: none;
+            animation: toastSlideIn 0.3s ease;
+            font-weight: 600;
+        }
+        
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Mensagem de "Em Construção" */
+        .construcao-mensagem {
+            background: var(--color-accent-gold);
+            color: var(--color-text-dark);
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        /* Indicador de evento no calendário */
+        .evento-indicador {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--color-accent-gold);
+            border-radius: 50%;
+        }
+        
+        /* Breakpoints de Responsividade */
+        @media (min-width: 1200px) {
+            .header {
+                padding: 25px 20px;
+                min-height: 180px;
+            }
+            .header-logo {
+                max-width: 500px;
+                transform: scale(0.9);
+            }
+        }
+
+        @media (max-width: 1199px) and (min-width: 769px) {
+            .header {
+                padding: 20px 15px;
+                min-height: 160px;
+            }
+            .header-logo {
+                max-width: 400px;
+                transform: scale(0.8);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 10px;
+                min-height: 140px;
+            }
+            .header-logo {
+                max-width: 300px;
+                transform: scale(0.7);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 12px 8px;
+                min-height: 120px;
+            }
+            .header-logo {
+                max-width: 250px;
+                transform: scale(0.6);
+            }
+        }
+
+        /* Estilos para o calendário completo */
+.mes-calendario-completo {
+    transition: all 0.3s ease;
+}
+
+.mes-calendario-completo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsividade para o calendário completo */
+@media (max-width: 1200px) {
+    .modal-content .calendario-completo-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content .calendario-completo-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .modal-content {
+        max-width: 98% !important;
+        width: 98% !important;
+    }
+}
+
+/* Correção para ícone de perfil em alto contraste */
+.high-contrast .user-avatar {
+    background: var(--bg-primary) !important;
+    border: 2px solid var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.high-contrast .user-avatar i {
+    color: var(--accent-color) !important;
+}
+
+/* Placeholder para quando não há ícone */
+.high-contrast .user-avatar:not(:has(i))::before {
+    content: "?";
+    color: var(--accent-color) !important;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Correção para botões ativos em alto contraste */
+.high-contrast .nav-links a.active {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+    border: 2px solid var(--accent-color) !important;
+    font-weight: bold;
+}
+
+.high-contrast .nav-links a.active i {
+    color: var(--accent-color) !important;
+}
+
+/* Garantir que todos os ícones da nav bar sejam visíveis */
+.high-contrast .nav-links i {
+    color: var(--accent-color) !important;
+}
+
+.high-contrast .nav-links a:hover {
+    background: var(--accent-color) !important;
+    color: var(--bg-primary) !important;
+}
+
+.high-contrast .nav-links a:hover i {
+    color: var(--bg-primary) !important;
+}
+
+/* Correções completas para calendário em alto contraste */
+.high-contrast .calendario-dia {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+    border: 1px solid var(--accent-color) !important;
+    font-weight: bold;
+}
+
+.high-contrast .calendario-dia.evento {
+    background: var(--accent-color) !important;
+    color: var(--bg-primary) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast .calendario-dia.evento:hover {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast .calendario-dia-nome {
+    color: var(--accent-color) !important;
+    font-weight: bold;
+}
+
+.high-contrast .evento-indicador {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--accent-color) !important;
+}
+
+.high-contrast .calendario-dia.evento .evento-indicador {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--bg-primary) !important;
+}
+
+/* Regras gerais para alto contraste */
+.high-contrast * {
+    color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.high-contrast body {
+    background: var(--bg-primary) !important;
+}
+
+.high-contrast .container,
+.high-contrast .educador-section,
+.high-contrast .recurso-card,
+.high-contrast .download-card,
+.high-contrast .construtor-plano,
+.high-contrast .calendario-interativo {
+    background: var(--bg-primary) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast .btn {
+    border: 2px solid var(--accent-color) !important;
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+    font-weight: bold;
+}
+
+.high-contrast .btn-primary {
+    background: var(--accent-color) !important;
+    color: var(--bg-primary) !important;
+}
+
+.high-contrast .btn:hover {
+    background: var(--accent-color) !important;
+    color: var(--bg-primary) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast .form-control {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast .form-control:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Garantir que todos os textos sejam legíveis */
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4,
+.high-contrast h5,
+.high-contrast h6,
+.high-contrast p,
+.high-contrast span,
+.high-contrast div {
+    color: var(--accent-color) !important;
+}
+
+/* Correção para elementos de formulário */
+.high-contrast select,
+.high-contrast textarea {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast select option {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+}
+
+/* Modal em alto contraste */
+.high-contrast .modal-content {
+    background: var(--bg-primary) !important;
+    border: 3px solid var(--accent-color) !important;
+}
+
+.high-contrast .close-button {
+    background: var(--accent-color) !important;
+    color: var(--bg-primary) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast .close-button:hover {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+}
+
+/* Estados de foco e hover em alto contraste */
+.high-contrast a:focus,
+.high-contrast button:focus,
+.high-contrast .btn:focus {
+    outline: 3px solid var(--accent-color) !important;
+    outline-offset: 2px;
+}
+
+.high-contrast input:focus,
+.high-contrast textarea:focus,
+.high-contrast select:focus {
+    outline: 3px solid var(--accent-color) !important;
+    outline-offset: 2px;
+}
+
+/* Textos de construção em alto contraste */
+.high-contrast .construcao-mensagem {
+    background: var(--accent-color) !important;
+    color: var(--bg-primary) !important;
+    border: 1px solid var(--accent-color) !important;
+    font-weight: bold;
+}
+
+/* Estilos para o botão de fechar no canto superior esquerdo */
+.close-button-top-left {
+    transition: all 0.3s ease !important;
+}
+
+.close-button-top-left:hover {
+    transform: scale(1.1) !important;
+    background: var(--color-primary-terracotta) !important;
+}
+
+/* Alto contraste para o botão de fechar */
+.high-contrast .close-button-top-left {
+    background: var(--accent-color) !important;
+    color: var(--bg-primary) !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.high-contrast .close-button-top-left:hover {
+    background: var(--bg-primary) !important;
+    color: var(--accent-color) !important;
+}
+
+/* Tema escuro para o botão de fechar */
+.dark-mode .close-button-top-left {
+    background: var(--accent-color) !important;
+    color: var(--bg-secondary) !important;
+}
+
+.dark-mode .close-button-top-left:hover {
+    background: #8C472A !important;
+}
+    </style>
+</head>
+
+<script
+        src="public/modules/joao-ia/joao-ia.js"
+        data-gemini-key="AIzaSyDyCyKyVKWULk6wF_aMIeyr0GijrL0Stbg"
+        data-bot-name="João"
+        data-theme="auto"
+        data-position="bottom-right"
+        data-auto-init="true"
+    ></script>
+
+<body>
+    <!-- Elementos decorativos africanos -->
+    <div class="african-pattern pattern-1"></div>
+    <div class="african-pattern pattern-2"></div>
+    <div class="kente-pattern kente-1"></div>
+    <div class="kente-pattern kente-2"></div>
+    
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p>Carregando...</p>
+        </div>
+    </div>
+    
+    <!-- Toast de Feedback -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- ========== NAVBAR ATUALIZADA ========== -->
+    <nav class="nav-bar" id="navBar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">SU</div>
+                <span>Somos Um</span>
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" id="homeLink"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="educador.html" class="active"><i class="fas fa-chalkboard-teacher"></i> Educador</a></li>
+                <li><a href="biblio.html" id="bibliotecaNavBtn"><i class="fas fa-book"></i> Biblioteca</a></li>
+                <li><a href="#" id="configBtn"><i class="fas fa-cog"></i> Configurações</a></li>
+            </ul>
+
+            <button class="toggle-btn" id="toggleBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="header">
+            <!-- LINHA CORRIGIDA: -->
+            <img src="public/assets/img/icons/logo_educador.png" alt="Logo Somos Um" class="header-logo">
+        </div>
+        
+        <!-- [MANTENHA TODO O RESTANTE DO CONTEÚDO ORIGINAL] -->
+        
+        <!-- Seção de Apresentação -->
+        <section class="educador-section">
+            <h2>Bem-vindo, Educador!</h2>
+            <p style="text-align: center; font-size: 1.2rem; line-height: 1.6; margin-bottom: 30px; font-weight: 600;">
+                Materiais, planos de aula, formações e ferramentas para aplicar a Lei 10.639/2003 em sala de aula.
+            </p>
+        </section>
+        
+        <!-- Seção de Recursos Didáticos -->
+        <section class="educador-section">
+            <h2>Recursos Didáticos</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-weight: 600;">
+                Catálogo completo de materiais para enriquecer suas aulas sobre História e Cultura Afro-Brasileira
+            </p>
+            
+            <div class="recursos-grid">
+                <div class="recurso-card">
+                    <h4><i class="fas fa-file-alt"></i> Planos de Aula</h4>
+                    <p>Mais de 50 planos de aula prontos para diferentes níveis de ensino, alinhados com a BNCC e a Lei 10.639/2003.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Planos de Aula')">Explorar</button>
+                        <button class="btn btn-secondary" onclick="showFeatureMessage('Filtros de Planos de Aula')">Filtrar</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-users"></i> Materiais da Comunidade</h4>
+                    <p>Recursos compartilhados por outros educadores: imagens, vídeos, textos, músicas e atividades culturais.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Materiais da Comunidade')">Explorar</button>
+                        <button class="btn btn-secondary" onclick="showFeatureMessage('Contribuir com Materiais')">Contribuir</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-gamepad"></i> Atividades Interativas</h4>
+                    <p>Jogos educativos, quizzes e atividades práticas para engajar os estudantes de forma lúdica.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Atividades Interativas')">Explorar</button>
+                        <button class="btn btn-secondary" onclick="showFeatureMessage('Filtros de Atividades')">Filtrar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção Construtor de Planos de Aula -->
+        <section class="educador-section">
+            <h2>Construtor de Planos de Aula</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-weight: 600;">
+                Crie e personalize seus próprios planos de aula com nossa ferramenta interativa
+            </p>
+            
+            <div class="construtor-plano">
+                <form id="planoForm">
+                    <div class="form-group">
+                        <label for="planoTema">Tema do Plano de Aula</label>
+                        <input type="text" id="planoTema" class="form-control" placeholder="Ex: Personalidades Negras na História do Brasil" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planoNivel">Nível de Ensino</label>
+                        <select id="planoNivel" class="form-control" required>
+                            <option value="">Selecione o nível</option>
+                            <option value="fundamental1">Ensino Fundamental I</option>
+                            <option value="fundamental2">Ensino Fundamental II</option>
+                            <option value="medio">Ensino Médio</option>
+                            <option value="superior">Ensino Superior</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planoObjetivos">Objetivos de Aprendizagem</label>
+                        <textarea id="planoObjetivos" class="form-control" placeholder="Descreva os objetivos que os estudantes devem alcançar..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planoConteudo">Conteúdo Programático</label>
+                        <textarea id="planoConteudo" class="form-control" placeholder="Descreva os conteúdos que serão abordados..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planoMetodologia">Metodologia</label>
+                        <textarea id="planoMetodologia" class="form-control" placeholder="Descreva as estratégias e métodos de ensino que serão utilizados..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planoAvaliacao">Avaliação</label>
+                        <textarea id="planoAvaliacao" class="form-control" placeholder="Descreva como será feita a avaliação da aprendizagem..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Plano
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="baixarPdf">
+                            <i class="fas fa-file-pdf"></i> Baixar em PDF
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="limparForm">
+                            <i class="fas fa-eraser"></i> Limpar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Seção Formação Continuada -->
+        <section class="educador-section">
+            <h2>Formação Continuada</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-weight: 600;">
+                Trilhas de aprendizagem para aprofundamento e atualização pedagógica
+            </p>
+            
+            <div class="recursos-grid">
+                <div class="recurso-card">
+                    <h4><i class="fas fa-graduation-cap"></i> História da África</h4>
+                    <p>Módulos sobre civilizações africanas, impérios e contribuições para a humanidade.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('História da África')">Iniciar</button>
+                        <button class="btn btn-secondary" onclick="showFeatureMessage('Conteúdo de História da África')">Ver Conteúdo</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-users"></i> Práticas Antirracistas</h4>
+                    <p>Formação sobre como identificar e combater o racismo estrutural no ambiente escolar.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Práticas Antirracistas')">Iniciar</button>
+                        <button class="btn btn-secondary" onclick="showFeatureMessage('Conteúdo de Práticas Antirracistas')">Ver Conteúdo</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-book"></i> Literatura Afro-Brasileira</h4>
+                    <p>Estudo de autores e obras fundamentais da literatura produzida por escritores negros.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Literatura Afro-Brasileira')">Iniciar</button>
+                        <button class="btn btn-secondary" onclick="showFeatureMessage('Conteúdo de Literatura Afro-Brasileira')">Ver Conteúdo</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção Ferramentas Pedagógicas -->
+        <section class="educador-section">
+            <h2>Ferramentas Pedagógicas</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-weight: 600;">
+                Aplicativos úteis para tornar suas aulas mais dinâmicas e interativas
+            </p>
+            
+            <div class="recursos-grid">
+                <div class="recurso-card">
+                    <h4><i class="fas fa-history"></i> Linha do Tempo Interativa</h4>
+                    <p>Crie e personalize linhas do tempo sobre a história afro-brasileira com eventos, imagens e vídeos.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Linha do Tempo Interativa')">Acessar</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-brain"></i> Gerador de Quiz</h4>
+                    <p>Crie quizzes personalizados sobre personalidades, eventos e cultura afro-brasileira.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Gerador de Quiz')">Acessar</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-map"></i> Mapa Cultural</h4>
+                    <p>Explore as influências africanas na cultura brasileira através de um mapa interativo.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Mapa Cultural')">Acessar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção Calendário Afro-Brasileiro -->
+        <section class="educador-section">
+            <h2>Calendário Afro-Brasileiro</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-weight: 600;">
+                Datas comemorativas e eventos importantes para planejar suas aulas ao longo do ano
+            </p>
+            
+            <div class="calendario-interativo">
+                <div class="calendario-header">
+                    <h3 id="calendarioMesAno">Carregando...</h3>
+                    <div>
+                        <button class="btn btn-secondary" id="calendarioAnterior"><i class="fas fa-chevron-left"></i></button>
+                        <button class="btn btn-secondary" id="calendarioProximo"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                
+                <div class="calendario-grid" id="calendarioGrid">
+                    <!-- O calendário será gerado dinamicamente -->
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="showCalendarioCompleto()">Ver Calendário Completo</button>
+                    <button class="btn btn-secondary" onclick="buscarEventosPersonalizados()">
+                        <i class="fas fa-robot"></i> Buscar Eventos com IA
+                    </button>
+                    <button class="btn btn-secondary" onclick="recarregarEventosPadrao()">
+                        <i class="fas fa-sync"></i> Recarregar Eventos
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção Guia da Lei 10.639/03 -->
+        <section class="educador-section">
+            <h2>Guia da Lei 10.639/03</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-weight: 600;">
+                Explicação clara, exemplos e recursos aplicáveis para implementação da lei em sala de aula
+            </p>
+            
+            <div class="recursos-grid">
+                <div class="recurso-card">
+                    <h4><i class="fas fa-gavel"></i> Entenda a Lei</h4>
+                    <p>Histórico, objetivos e implicações da Lei 10.639/2003 no contexto educacional brasileiro.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Entenda a Lei')">Ler Guia</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-lightbulb"></i> Exemplos Práticos</h4>
+                    <p>Casos de sucesso e experiências de implementação da lei em diferentes escolas.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Exemplos Práticos')">Ver Exemplos</button>
+                    </div>
+                </div>
+                
+                <div class="recurso-card">
+                    <h4><i class="fas fa-book"></i> Por Disciplina</h4>
+                    <p>Sugestões de como abordar o tema em diferentes disciplinas do currículo escolar.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="showFeatureMessage('Por Disciplina')">Explorar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção Central de Downloads -->
+        <section class="educador-section">
+            <h2>Central de Downloads</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-weight: 600;">
+                Todos os materiais organizados para download e uso offline
+            </p>
+            
+            <div class="downloads-grid">
+                <div class="download-card">
+                    <h4>Cartilha: Heróis e Heroínas Negras</h4>
+                    <p>Material ilustrado com biografias de personalidades negras brasileiras.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <button class="btn btn-primary" onclick="showFeatureMessage('Cartilha: Heróis e Heroínas Negras')">Baixar PDF</button>
+                </div>
+                
+                <div class="download-card">
+                    <h4>Linha do Tempo: África</h4>
+                    <p>Linha do tempo das civilizações africanas em formato A3 para impressão.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <button class="btn btn-primary" onclick="showFeatureMessage('Linha do Tempo: África')">Baixar PDF</button>
+                </div>
+                
+                <div class="download-card">
+                    <h4>Atividades: Cultura Afro</h4>
+                    <p>Pacote com 20 atividades práticas sobre cultura afro-brasileira.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <button class="btn btn-primary" onclick="showFeatureMessage('Atividades: Cultura Afro')">Baixar ZIP</button>
+                </div>
+                
+                <div class="download-card">
+                    <h4>Apresentações: História Negra</h4>
+                    <p>Coleção de apresentações em PowerPoint para uso em sala de aula.</p>
+                    <div class="construcao-mensagem">Em breve - Em desenvolvimento</div>
+                    <button class="btn btn-primary" onclick="showFeatureMessage('Apresentações: História Negra')">Baixar ZIP</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">Somos Um</div>
+                <div class="footer-info">
+                    <p>Plataforma dedicada ao ensino da História e Cultura Afro-Brasileira</p>
+                </div>
+            </div>
+        </footer>
+        
+        <!-- Direitos autorais -->
+        <div class="copyright">
+            <p>&copy; 2025 Somos Um - Todos os direitos reservados</p>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações -->
+    <div class="modal" id="configModal">
+        <div class="modal-content config-modal-content">
+            <h2><i class="fas fa-cog"></i> Configurações</h2>
+            
+            <div class="config-section">
+                <h3>Aparência</h3>
+                <div class="config-option">
+                    <span>Tema Escuro</span>
+                    <label class="switch">
+                        <input type="checkbox" id="darkTheme">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="config-option">
+                    <span>Modo Alto Contraste</span>
+                    <label class="switch">
+                        <input type="checkbox" id="highContrast">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="config-section">
+                <h3>Notificações</h3>
+                <div class="config-option">
+                    <span>Notificações por Email</span>
+                    <label class="switch">
+                        <input type="checkbox" id="emailNotifications" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="config-option">
+                    <span>Notificações do Sistema</span>
+                    <label class="switch">
+                        <input type="checkbox" id="systemNotifications" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="config-section">
+                <h3>Preferências</h3>
+                <div class="config-option">
+                    <span>Idioma</span>
+                    <select id="languageSelect">
+                        <option value="pt">Português</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                    </select>
+                </div>
+                <div class="config-option">
+                    <span>Tamanho da Fonte</span>
+                    <select id="fontSizeSelect">
+                        <option value="small">Pequeno</option>
+                        <option value="medium" selected>Médio</option>
+                        <option value="large">Grande</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="close-button" data-modal="configModal">Salvar e Fechar</button>
+            </div>
+        </div>
+    </div>
+<script>
+// ========== FUNÇÕES GLOBAIS ==========
+function showFeatureMessage(featureName) {
+    showToast(`O recurso "${featureName}" estará disponível em breve!`, 'info');
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    
+    toast.textContent = message;
+    toast.style.display = 'block';
+    
+    switch(type) {
+        case 'success': toast.style.backgroundColor = 'var(--color-contrast-green)'; break;
+        case 'error': toast.style.backgroundColor = '#d32f2f'; break;
+        case 'warning': toast.style.backgroundColor = 'var(--color-accent-gold)'; break;
+        default: toast.style.backgroundColor = 'var(--accent-color)';
+    }
+    
+    setTimeout(() => { toast.style.display = 'none'; }, 3000);
+}
+
+function showLoader(show = true) {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = show ? 'flex' : 'none';
+}
+
+// ========== CLASSES AUXILIARES ==========
+class NavbarManager {
+    constructor() {
+        this.navBar = document.getElementById('navBar');
+        this.toggleBtn = document.getElementById('toggleBtn');
+        this.navLinks = document.getElementById('navLinks');
+        this.homeLink = document.getElementById('homeLink');
+        this.lastScrollY = window.scrollY;
+    }
+    
+    init() {
+        this.setupToggle();
+        this.setupScrollBehavior();
+        this.setupHomeButton();
+    }
+    
+    setupHomeButton() {
+        if (this.homeLink) {
+            this.homeLink.addEventListener('click', (e) => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    }
+    
+    setupToggle() {
+        if (this.toggleBtn) {
+            this.toggleBtn.addEventListener('click', () => this.toggleMenu());
+        }
+    }
+    
+    toggleMenu() {
+        if (this.navLinks) {
+            this.navLinks.classList.toggle('show');
+            const icon = this.toggleBtn.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            }
+        }
+    }
+    
+    setupScrollBehavior() {
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            if (this.navBar) {
+                if (currentScrollY > this.lastScrollY && currentScrollY > 100) {
+                    this.navBar.classList.add('hidden');
+                } else {
+                    this.navBar.classList.remove('hidden');
+                }
+            }
+            this.lastScrollY = currentScrollY;
+        });
+    }
+}
+
+class PlanoBuilder {
+    constructor() {
+        this.planoForm = document.getElementById('planoForm');
+        this.baixarPdfBtn = document.getElementById('baixarPdf');
+        this.limparFormBtn = document.getElementById('limparForm');
+    }
+    
+    init() {
+        this.setupFormEvents();
+    }
+    
+    setupFormEvents() {
+        if (this.planoForm) {
+            this.planoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.salvarPlano();
+            });
+        }
+        
+        if (this.baixarPdfBtn) {
+            this.baixarPdfBtn.addEventListener('click', () => {
+                showFeatureMessage('Geração de PDF');
+            });
+        }
+        
+        if (this.limparFormBtn) {
+            this.limparFormBtn.addEventListener('click', () => {
+                if (this.planoForm && confirm('Limpar formulário?')) {
+                    this.planoForm.reset();
+                }
+            });
+        }
+    }
+    
+    async salvarPlano() {
+        const planoData = {
+            tema: document.getElementById('planoTema')?.value || '',
+            nivel: document.getElementById('planoNivel')?.value || '',
+            objetivos: document.getElementById('planoObjetivos')?.value || '',
+            conteudo: document.getElementById('planoConteudo')?.value || '',
+            metodologia: document.getElementById('planoMetodologia')?.value || '',
+            avaliacao: document.getElementById('planoAvaliacao')?.value || '',
+            dataCriacao: new Date().toISOString()
+        };
+        
+        let planosSalvos = JSON.parse(localStorage.getItem('planosAula') || '[]');
+        planosSalvos.push(planoData);
+        localStorage.setItem('planosAula', JSON.stringify(planosSalvos));
+        
+        showToast('Plano de aula salvo com sucesso!', 'success');
+        if (this.planoForm) this.planoForm.reset();
+    }
+}
+
+class ModalManager {
+    constructor() {
+        this.buttonModalMap = {
+            'configBtn': 'configModal',
+            // 'bibliotecaNavBtn': 'bibliotecaModal'
+        };
+    }
+    
+    init() {
+        this.setupModalButtons();
+        this.setupCloseButtons();
+    }
+    
+    setupModalButtons() {
+        Object.keys(this.buttonModalMap).forEach(buttonId => {
+            const button = document.getElementById(buttonId);
+            const modalId = this.buttonModalMap[buttonId];
+            if (button) {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.openModal(modalId);
+                });
+            }
+        });
+    }
+    
+    setupCloseButtons() {
+        document.querySelectorAll('.close-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const modalId = button.getAttribute('data-modal');
+                this.closeModal(modalId);
+            });
+        });
+        
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.style.display = 'none';
+            });
+        });
+    }
+    
+    openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.style.display = 'flex';
+    }
+    
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.style.display = 'none';
+    }
+}
+
+class SettingsManager {
+    constructor() {
+        this.darkThemeToggle = document.getElementById('darkTheme');
+        this.highContrastToggle = document.getElementById('highContrast');
+    }
+    
+    init() {
+        this.setupThemeToggles();
+        this.loadPreferences();
+    }
+    
+    setupThemeToggles() {
+        if (this.darkThemeToggle) {
+            this.darkThemeToggle.addEventListener('change', () => {
+                document.body.classList.toggle('dark-mode', this.darkThemeToggle.checked);
+                localStorage.setItem('darkTheme', this.darkThemeToggle.checked);
+            });
+        }
+        
+        if (this.highContrastToggle) {
+            this.highContrastToggle.addEventListener('change', () => {
+                document.body.classList.toggle('high-contrast', this.highContrastToggle.checked);
+                localStorage.setItem('highContrast', this.highContrastToggle.checked);
+            });
+        }
+    }
+    
+    loadPreferences() {
+        if (localStorage.getItem('darkTheme') === 'true' && this.darkThemeToggle) {
+            this.darkThemeToggle.checked = true;
+            document.body.classList.add('dark-mode');
+        }
+        
+        if (localStorage.getItem('highContrast') === 'true' && this.highContrastToggle) {
+            this.highContrastToggle.checked = true;
+            document.body.classList.add('high-contrast');
+        }
+    }
+}
+
+class CalendarioManager {
+    constructor() {
+        this.calendarioGrid = document.getElementById('calendarioGrid');
+        this.calendarioMesAno = document.getElementById('calendarioMesAno');
+        this.calendarioAnterior = document.getElementById('calendarioAnterior');
+        this.calendarioProximo = document.getElementById('calendarioProximo');
+        
+        this.dataAtual = new Date();
+        this.mesAtual = this.dataAtual.getMonth();
+        this.anoAtual = this.dataAtual.getFullYear();
+        this.eventos = [];
+    }
+    
+    async init() {
+        showLoader(true);
+        try {
+            this.eventos = this.getEventosPadrao();
+            this.gerarCalendario(this.mesAtual, this.anoAtual);
+            this.setupNavegacao();
+        } catch (error) {
+            console.error('Erro no calendário:', error);
+            this.eventos = this.getEventosPadrao();
+            this.gerarCalendario(this.mesAtual, this.anoAtual);
+            this.setupNavegacao();
+        } finally {
+            showLoader(false);
+        }
+    }
+    
+    getEventosPadrao() {
+        const anoAtual = this.anoAtual;
+        return [
+            { data: `${anoAtual}-11-20`, titulo: 'Dia da Consciência Negra', descricao: 'Homenagem a Zumbi dos Palmares', tipo: 'feriado' },
+            { data: `${anoAtual}-05-13`, titulo: 'Abolição da Escravatura', descricao: 'Lei Áurea de 1888', tipo: 'historico' },
+            { data: `${anoAtual}-03-21`, titulo: 'Dia contra Discriminação Racial', descricao: 'Data instituída pela ONU', tipo: 'internacional' },
+            { data: `${anoAtual}-07-25`, titulo: 'Dia da Mulher Negra', descricao: 'Celebração da resistência feminina', tipo: 'cultural' }
+        ];
+    }
+    
+    gerarCalendario(mes, ano) {
+        if (!this.calendarioGrid) return;
+        
+        this.calendarioGrid.innerHTML = '';
+        this.calendarioMesAno.textContent = this.getNomeMes(mes) + ' ' + ano;
+        
+        ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].forEach(dia => {
+            const diaElement = document.createElement('div');
+            diaElement.className = 'calendario-dia-nome';
+            diaElement.textContent = dia;
+            this.calendarioGrid.appendChild(diaElement);
+        });
+        
+        const primeiroDia = new Date(ano, mes, 1);
+        const ultimoDia = new Date(ano, mes + 1, 0);
+        const diasNoMes = ultimoDia.getDate();
+        const primeiroDiaSemana = primeiroDia.getDay();
+        
+        for (let i = 0; i < primeiroDiaSemana; i++) {
+            const diaVazio = document.createElement('div');
+            diaVazio.className = 'calendario-dia';
+            diaVazio.style.visibility = 'hidden';
+            this.calendarioGrid.appendChild(diaVazio);
+        }
+        
+        for (let dia = 1; dia <= diasNoMes; dia++) {
+            const diaElement = document.createElement('div');
+            diaElement.className = 'calendario-dia';
+            diaElement.textContent = dia;
+            
+            const dataStr = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+            const eventosDoDia = this.eventos.filter(evento => evento.data === dataStr);
+            
+            if (eventosDoDia.length > 0) {
+                diaElement.classList.add('evento');
+                diaElement.title = eventosDoDia.map(e => e.titulo).join(', ');
+            }
+            
+            this.calendarioGrid.appendChild(diaElement);
+        }
+    }
+    
+    setupNavegacao() {
+        if (this.calendarioAnterior) {
+            this.calendarioAnterior.addEventListener('click', () => {
+                this.mesAtual--;
+                if (this.mesAtual < 0) {
+                    this.mesAtual = 11;
+                    this.anoAtual--;
+                }
+                this.gerarCalendario(this.mesAtual, this.anoAtual);
+            });
+        }
+        
+        if (this.calendarioProximo) {
+            this.calendarioProximo.addEventListener('click', () => {
+                this.mesAtual++;
+                if (this.mesAtual > 11) {
+                    this.mesAtual = 0;
+                    this.anoAtual++;
+                }
+                this.gerarCalendario(this.mesAtual, this.anoAtual);
+            });
+        }
+    }
+    
+    getNomeMes(mes) {
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        return meses[mes];
+    }
+}
+
+class BibliotecaManager {
+    constructor() {
+        this.materiais = [];
+    }
+    
+    async init() {
+        // Inicialização básica
+        this.materiais = this.getMateriaisPadrao();
+    }
+    
+    getMateriaisPadrao() {
+        return [
+            {
+                id: 1,
+                titulo: 'Cartilha: Heróis e Heroínas Negras',
+                tipo: 'pdf',
+                descricao: 'Material ilustrado com biografias de personalidades negras brasileiras.'
+            }
+        ];
+    }
+}
+
+class ChatIAManager {
+    constructor() {
+        this.mensagens = [];
+    }
+    
+    init() {
+        // Inicialização básica do chat
+    }
+}
+
+// ========== CLASSE PRINCIPAL ==========
+class EducadorApp {
+    constructor() {
+        this.navbar = new NavbarManager();
+        this.planoBuilder = new PlanoBuilder();
+        this.modalManager = new ModalManager();
+        this.settings = new SettingsManager();
+        this.calendario = new CalendarioManager();
+        this.biblioteca = new BibliotecaManager();
+        this.chatIA = new ChatIAManager();
+        
+        this.init();
+    }
+    
+    async init() {
+        this.navbar.init();
+        this.planoBuilder.init();
+        this.modalManager.init();
+        this.settings.init();
+        await this.calendario.init();
+        this.biblioteca.init();
+        this.chatIA.init();
+    }
+}
+
+// ========== INICIALIZAÇÃO ==========
+let app;
+document.addEventListener('DOMContentLoaded', () => {
+    app = new EducadorApp();
+});
+
+// Funções globais para botões
+function showCalendarioCompleto() {
+    if (app && app.calendario) {
+        showFeatureMessage('Calendário Completo');
+    }
+}
+
+function buscarEventosPersonalizados() {
+    showFeatureMessage('Busca de Eventos com IA');
+}
+
+function recarregarEventosPadrao() {
+    if (app && app.calendario) {
+        app.calendario.eventos = app.calendario.getEventosPadrao();
+        app.calendario.gerarCalendario(app.calendario.mesAtual, app.calendario.anoAtual);
+        showToast('Eventos recarregados!', 'success');
+    }
+}
+
+// Tornar global
+window.app = app;
+window.showFeatureMessage = showFeatureMessage;
+window.showCalendarioCompleto = showCalendarioCompleto;
+window.buscarEventosPersonalizados = buscarEventosPersonalizados;
+window.recarregarEventosPadrao = recarregarEventosPadrao;
+</script>
+</body>
+</html>

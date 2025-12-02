@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidade - Somos Um</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 1. CSS do Módulo João IA -->
+    <link rel="stylesheet" href="public/modules/joao-ia/joao-ia.css">
+    <!-- 2. Biblioteca de Ícones (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ========== VARIÁVEIS E RESET (Mantendo identidade visual) ========== */
+        :root {
+            --color-primary-terracotta: #A55734;
+            --color-background-deep: #6F2626;
+            --color-accent-gold: #FFD700;
+            --color-text-dark: #2C2C2C;
+            --color-card-light: #F7EEDD;
+            --color-contrast-green: #4B5320;
+            --color-african-blue: #1E3A5F;
+            --color-african-purple: #5D3A6F;
+            
+            --bg-primary: var(--color-background-deep);
+            --bg-secondary: white;
+            --bg-tertiary: #f8f9fa;
+            --text-primary: var(--color-text-dark);
+            --text-secondary: white;
+            --accent-color: var(--color-primary-terracotta);
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: var(--transition);
+            scroll-behavior: smooth;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .nav-bar {
+            width: calc(100% - 40px);
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            margin-bottom: 20px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-bar.hidden { transform: translateY(-100px); }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            min-height: 60px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fugaz One', cursive;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 10px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+        }
+
+        .nav-links i { margin-right: 8px; }
+
+        /* ========== CONTAINER PRINCIPAL ========== */
+        .container {
+            position: relative;
+            background-color: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            z-index: 10;
+            border: 1px solid var(--border-color);
+            margin-top: 100px;
+            min-height: 80vh;
+        }
+
+        /* Patterns de Fundo */
+        .african-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.08;
+        }
+        
+        .pattern-1 {
+            background-image: radial-gradient(circle, var(--color-accent-gold) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* ========== HEADER DA PÁGINA ========== */
+        .page-header {
+    position: relative;
+    overflow: visible !important; /* Impede cortes */
+    padding: 30px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-color) 0%, #8C472A 100%);
+    border-bottom: 3px solid var(--border-color);
+    min-height: 180px; /* Altura mínima */
+}
+
+        .page-header::before {
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-family: 'Fugaz One', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: var(--color-accent-gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-logo {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    position: relative;
+    z-index: 2;
+}
+
+        /* ========== LAYOUT DA COMUNIDADE ========== */
+        .community-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 25px;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Esquerda (Navegação) */
+        .left-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .user-mini-profile {
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .avatar-large {
+            width: 80px;
+            height: 80px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            border: 4px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-list li {
+            margin-bottom: 5px;
+        }
+
+        .menu-list a {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 8px;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .menu-list a:hover, .menu-list a.active {
+            background: rgba(165, 87, 52, 0.1);
+            color: var(--accent-color);
+        }
+
+        .menu-list i {
+            width: 25px;
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        /* Área Central (Feed) */
+        .main-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .create-post {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .post-input-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .avatar-small {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .post-input {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 10px 20px;
+            background: var(--bg-tertiary);
+            resize: none;
+            height: 45px;
+            transition: var(--transition);
+            line-height: 22px;
+        }
+
+        .post-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: white;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover { color: var(--accent-color); }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background: #8C472A;
+            transform: translateY(-2px);
+        }
+
+        /* Post Card */
+        .post-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-info {
+            margin-left: 12px;
+        }
+
+        .post-author {
+            font-weight: 700;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .post-time {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .post-tag {
+            margin-left: auto;
+            background: rgba(165, 87, 52, 0.1);
+            color: var(--accent-color);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            object-fit: cover;
+            max-height: 300px;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .stat-btn:hover, .stat-btn.active {
+            color: var(--accent-color);
+        }
+
+        /* Sidebar Direita (Widgets) */
+        .right-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .widget-title {
+            font-family: 'Fugaz One', cursive;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid rgba(165, 87, 52, 0.2);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Evento Widget */
+        .event-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 15px;
+        }
+
+        .event-date {
+            background: white;
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .date-month {
+            background: var(--accent-color);
+            color: white;
+            width: 100%;
+            text-align: center;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            padding: 2px 0;
+        }
+
+        .date-day {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .event-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .event-info span {
+            font-size: 0.8rem;
+            color: #666;
+            display: block;
+        }
+
+        /* Projetos Widget */
+        .project-item {
+            margin-bottom: 15px;
+        }
+
+        .project-item h4 {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-contrast-green);
+            border-radius: 4px;
+        }
+
+        /* Responsividade */
+        @media (min-width: 1200px) {
+    .page-header {
+        padding: 40px 25px;
+        min-height: 220px;
+    }
+    .header-logo {
+        max-width: 500px;
+        transform: scale(0.9);
+    }
+    .page-header h1 {
+        font-size: 3.2rem;
+    }
+}
+
+/* Tablet */
+@media (max-width: 1199px) and (min-width: 769px) {
+    .page-header {
+        padding: 35px 20px;
+        min-height: 200px;
+    }
+    .header-logo {
+        max-width: 400px;
+        transform: scale(0.8);
+    }
+    .page-header h1 {
+        font-size: 2.8rem;
+    }
+    .page-header p {
+        font-size: 1.1rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 25px 15px;
+        min-height: 160px;
+    }
+    .header-logo {
+        max-width: 300px;
+        transform: scale(0.7);
+    }
+    .page-header h1 {
+        font-size: 2.2rem;
+        margin-bottom: 8px;
+    }
+    .page-header p {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile muito pequeno */
+@media (max-width: 480px) {
+    .page-header {
+        padding: 20px 10px;
+        min-height: 140px;
+    }
+    .header-logo {
+        max-width: 250px;
+        transform: scale(0.6);
+    }
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+    .page-header p {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* Container principal responsivo */
+.container {
+    margin-top: 100px;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .nav-bar {
+        width: calc(100% - 20px);
+        left: 10px;
+        top: 10px;
+    }
+    
+    .container {
+        margin-top: 90px;
+    }
+}
+
+/* Grid da comunidade responsivo melhorado */
+@media (max-width: 768px) {
+    .community-grid {
+        padding: 20px 15px;
+        gap: 15px;
+    }
+    
+    .menu-card {
+        padding: 15px;
+    }
+    
+    .create-post {
+        padding: 15px;
+    }
+    
+    .post-input-area {
+        gap: 10px;
+    }
+    
+    .avatar-small {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .post-input {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Navbar mobile melhorada */
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 0 15px;
+        min-height: 50px;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    .logo-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: var(--bg-secondary);
+        border-radius: 0 0 15px 15px;
+        box-shadow: var(--shadow);
+        padding: 15px;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .nav-links a {
+        justify-content: flex-start;
+        padding: 12px 15px;
+        border-radius: 8px;
+    }
+    
+    .toggle-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+        display: flex;
+    }
+}
+
+/* Botão flutuante mobile ajustado */
+@media (max-width: 768px) {
+    .mobile-fab {
+        bottom: 20px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+        font-size: 1.3rem;
+    }
+}
+
+/* Widgets responsivos */
+@media (max-width: 1024px) {
+    .widget-card {
+        padding: 15px;
+    }
+    
+    .event-item {
+        gap: 10px;
+    }
+    
+    .event-date {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .date-day {
+        font-size: 1.1rem;
+    }
+}
+    </style>
+</head>
+
+<script
+        src="public/modules/joao-ia/joao-ia.js"
+        data-gemini-key="AIzaSyDyCyKyVKWULk6wF_aMIeyr0GijrL0Stbg"
+        data-bot-name="João"
+        data-theme="auto"
+        data-position="bottom-right"
+        data-auto-init="true"
+    ></script>
+
+<body>
+    <!-- Patterns de fundo -->
+    <div class="african-pattern pattern-1"></div>
+
+    <!-- NavBar -->
+    <nav class="nav-bar" id="navBar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">SU</div>
+                <span>Somos Um</span>
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="biblio.html"><i class="fas fa-book"></i> Biblioteca</a></li>
+                <li><a href="#" class="active"><i class="fas fa-users"></i> Comunidade</a></li>
+                <li><a href="#"><i class="fas fa-user-circle"></i> Perfil</a></li>
+            </ul>
+
+            <button class="toggle-btn" id="toggleBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header da Página -->
+        <header class="page-header">
+        <!-- LINHA CORRIGIDA: -->
+<img src="public/assets/img/icons/logo_comunidade.png" alt="Logo Somos Um" class="header-logo">
+        </header>
+
+        <!-- Grid da Comunidade -->
+        <div class="community-grid">
+            
+            <!-- Sidebar Esquerda: Navegação e Perfil -->
+            <aside class="left-sidebar">
+                <div class="menu-card">
+                    <div class="user-mini-profile">
+                        <div class="avatar-large">U</div>
+                        <h3>Olá, Usuário</h3>
+                        <p style="font-size: 0.85rem; color: #666;">Membro desde 2025</p>
+                    </div>
+                    <ul class="menu-list">
+                        <li><a href="#" class="active"><i class="fas fa-stream"></i> Feed Geral</a></li>
+                        <li><a href="#"><i class="fas fa-user-friends"></i> Meus Grupos</a></li>
+                        <li><a href="#"><i class="fas fa-calendar-alt"></i> Eventos Salvos</a></li>
+                        <li><a href="#"><i class="fas fa-hands-helping"></i> Meus Projetos</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-card">
+                    <h4 style="margin-bottom: 15px; color: var(--accent-color);">Grupos Populares</h4>
+                    <ul class="menu-list">
+                        <li><a href="#"><i class="fas fa-drum"></i> Capoeira & Movimento</a></li>
+                        <li><a href="#"><i class="fas fa-book-reader"></i> Clube do Livro Afro</a></li>
+                        <li><a href="#"><i class="fas fa-utensils"></i> Gastronomia Ancestral</a></li>
+                        <li><a href="#"><i class="fas fa-fist-raised"></i> Ativismo e Direitos</a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Centro: Feed -->
+            <main class="main-feed">
+                <!-- Caixa de Criar Post -->
+                <div class="create-post">
+                    <div class="post-input-area">
+                        <div class="avatar-small">U</div>
+                        <textarea class="post-input" placeholder="O que você está pensando? Compartilhe com o quilombo..."></textarea>
+                    </div>
+                    <div class="post-actions">
+                        <div class="action-buttons">
+                            <button class="icon-btn"><i class="fas fa-image"></i> Foto</button>
+                            <button class="icon-btn"><i class="fas fa-video"></i> Vídeo</button>
+                            <button class="icon-btn"><i class="fas fa-calendar-plus"></i> Evento</button>
+                        </div>
+                        <button class="btn-primary" id="publishBtn">Publicar</button>
+                    </div>
+                </div>
+
+                <!-- Feed Container -->
+                <div id="feedContainer">
+                    <!-- Posts serão injetados aqui via JS -->
+                </div>
+                
+                <!-- Botão Carregar Mais -->
+                <button class="btn-primary" style="width: 100%; background: transparent; border: 2px solid var(--accent-color); color: var(--accent-color);" id="loadMoreBtn">
+                    Carregar Mais Publicações
+                </button>
+            </main>
+
+            <!-- Sidebar Direita: Widgets -->
+            <aside class="right-sidebar">
+                <!-- Widget Eventos -->
+                <div class="widget-card">
+                    <div class="widget-title">
+                        Agenda Cultural
+                        <a href="#" style="font-size: 0.8rem; color: var(--accent-color);">Ver tudo</a>
+                    </div>
+                    
+                    <div class="event-item">
+                        <div class="event-date">
+                            <span class="date-month">Nov</span>
+                            <span class="date-day">28</span>
+                        </div>
+                        <div class="event-info">
+                            <h4>Oficina de Turbantes</h4>
+                            <span><i class="fas fa-clock"></i> 14:00 - Centro Cultural</span>
+                        </div>
+                    </div>
+
+                    <div class="event-item">
+                        <div class="event-date">
+                            <span class="date-month">Dez</span>
+                            <span class="date-day">02</span>
+                        </div>
+                        <div class="event-info">
+                            <h4>Roda de Samba e História</h4>
+                            <span><i class="fas fa-clock"></i> 18:00 - Praça Central</span>
+                        </div>
+                    </div>
+
+                    <div class="event-item">
+                        <div class="event-date">
+                            <span class="date-month">Dez</span>
+                            <span class="date-day">10</span>
+                        </div>
+                        <div class="event-info">
+                            <h4>Palestra: Lei 10.639</h4>
+                            <span><i class="fas fa-video"></i> Online</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary" style="width: 100%; font-size: 0.9rem;">Divulgar Evento</button>
+                </div>
+
+                <!-- Widget Projetos -->
+                <div class="widget-card">
+                    <div class="widget-title">
+                        Projetos Ativos
+                        <i class="fas fa-rocket"></i>
+                    </div>
+
+                    <div class="project-item">
+                        <h4>Biblioteca Comunitária <span style="color: var(--color-contrast-green);">80%</span></h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%;"></div>
+                        </div>
+                        <span style="font-size: 0.8rem; color: #666; margin-top: 5px; display: block;">Arrecadação de livros infantis</span>
+                    </div>
+
+                    <div class="project-item">
+                        <h4>Horta Urbana Ancestral <span style="color: #e67e22;">45%</span></h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%; background: #e67e22;"></div>
+                        </div>
+                        <span style="font-size: 0.8rem; color: #666; margin-top: 5px; display: block;">Precisamos de voluntários</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante Mobile -->
+    <button class="mobile-fab">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <script>
+        // Dados Simulados
+        const mockPosts = [
+            {
+                id: 1,
+                author: "Dandara Silva",
+                avatar: "D",
+                time: "2 horas atrás",
+                tag: "Cultura",
+                content: "Hoje foi dia de visitar o Museu Afro Brasil! Uma experiência incrível de reconexão com nossa história. Recomendo a todos levarem as crianças.",
+                image: "https://images.unsplash.com/photo-1596728328766-076137e23188?w=800&auto=format&fit=crop&q=60",
+                likes: 45,
+                comments: 12
+            },
+            {
+                id: 2,
+                author: "Professor João",
+                avatar: "J",
+                time: "4 horas atrás",
+                tag: "Educação",
+                content: "Estou organizando um grupo de estudos sobre a obra de Carolina Maria de Jesus. Quem tiver interesse, vamos nos reunir virtualmente toda quinta-feira às 19h. Comentem aqui para eu enviar o link!",
+                image: null,
+                likes: 89,
+                comments: 34
+            },
+            {
+                id: 3,
+                author: "Grupo Capoeira Angola",
+                avatar: "C",
+                time: "Ontem",
+                tag: "Esporte & Cultura",
+                content: "Salve, comunidade! Nossa roda de sexta-feira foi cheia de axé. Agradecemos a presença de todos. Semana que vem tem mais!",
+                image: "https://images.unsplash.com/photo-1541857754-555e34747ebc?w=800&auto=format&fit=crop&q=60",
+                likes: 120,
+                comments: 8
+            }
+        ];
+
+        class CommunityApp {
+            constructor() {
+                this.feedContainer = document.getElementById('feedContainer');
+                this.publishBtn = document.getElementById('publishBtn');
+                this.textarea = document.querySelector('.post-input');
+                this.toggleBtn = document.getElementById('toggleBtn');
+                this.navLinks = document.querySelector('.nav-links');
+                
+                this.init();
+            }
+
+            init() {
+                this.renderFeed();
+                this.setupEventListeners();
+                this.setupNavbar();
+            }
+
+            createPostHTML(post) {
+                const imageHTML = post.image ? 
+                    `<img src="${post.image}" alt="Post image" class="post-image">` : '';
+
+                return `
+                    <article class="post-card">
+                        <div class="post-header">
+                            <div class="avatar-small">${post.avatar}</div>
+                            <div class="post-info">
+                                <span class="post-author">${post.author}</span>
+                                <span class="post-time">${post.time}</span>
+                            </div>
+                            <span class="post-tag">${post.tag}</span>
+                        </div>
+                        <div class="post-content">
+                            <p>${post.content}</p>
+                        </div>
+                        ${imageHTML}
+                        <div class="post-stats">
+                            <button class="stat-btn" onclick="this.classList.toggle('active')">
+                                <i class="far fa-heart"></i> ${post.likes} Curtidas
+                            </button>
+                            <button class="stat-btn">
+                                <i class="far fa-comment"></i> ${post.comments} Comentários
+                            </button>
+                            <button class="stat-btn">
+                                <i class="far fa-share-square"></i> Compartilhar
+                            </button>
+                        </div>
+                    </article>
+                `;
+            }
+
+            renderFeed() {
+                this.feedContainer.innerHTML = mockPosts.map(post => this.createPostHTML(post)).join('');
+            }
+
+            setupEventListeners() {
+                // Publicar Post (Simulado)
+                this.publishBtn.addEventListener('click', () => {
+                    const content = this.textarea.value.trim();
+                    if (!content) return;
+
+                    const newPost = {
+                        id: Date.now(),
+                        author: "Usuário",
+                        avatar: "U",
+                        time: "Agora mesmo",
+                        tag: "Geral",
+                        content: content,
+                        image: null,
+                        likes: 0,
+                        comments: 0
+                    };
+
+                    const postHTML = this.createPostHTML(newPost);
+                    this.feedContainer.insertAdjacentHTML('afterbegin', postHTML);
+                    this.textarea.value = '';
+                    
+                    // Animação de feedback
+                    const btnOriginalText = this.publishBtn.textContent;
+                    this.publishBtn.textContent = "Publicado!";
+                    this.publishBtn.style.background = "var(--color-contrast-green)";
+                    setTimeout(() => {
+                        this.publishBtn.textContent = btnOriginalText;
+                        this.publishBtn.style.background = "";
+                    }, 2000);
+                });
+            }
+
+            setupNavbar() {
+                // Scroll effect
+                let lastScroll = 0;
+                const navbar = document.getElementById('navBar');
+
+                window.addEventListener('scroll', () => {
+                    const currentScroll = window.pageYOffset;
+                    if (currentScroll > lastScroll && currentScroll > 100) {
+                        navbar.classList.add('hidden');
+                    } else {
+                        navbar.classList.remove('hidden');
+                    }
+                    lastScroll = currentScroll;
+                });
+
+                // Mobile toggle
+                this.toggleBtn.addEventListener('click', () => {
+                    if (this.navLinks.style.display === 'flex') {
+                        this.navLinks.style.display = 'none';
+                    } else {
+                        this.navLinks.style.display = 'flex';
+                        this.navLinks.style.flexDirection = 'column';
+                        this.navLinks.style.position = 'absolute';
+                        this.navLinks.style.top = '70px';
+                        this.navLinks.style.right = '20px';
+                        this.navLinks.style.background = 'white';
+                        this.navLinks.style.padding = '20px';
+                        this.navLinks.style.borderRadius = '10px';
+                        this.navLinks.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                        this.navLinks.style.width = '200px';
+                    }
+                });
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            new CommunityApp();
+        });
+    </script>
+</body>
+</html>
