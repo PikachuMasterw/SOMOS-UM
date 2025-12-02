@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste João IA - CORRIGIDO</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; 
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { color: #333; text-align: center; margin-bottom: 20px; }
+        .btn { 
+            padding: 10px 15px; 
+            background: #A55734; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover { background: #8C472A; }
+        .btn:disabled { background: #cccccc; cursor: not-allowed; }
+        .btn-success { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+        .btn-warning { background: #ffc107; color: #000; }
+        
+        .status-box { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 15px 0; 
+            border-left: 4px solid #A55734;
+        }
+        .error-box { 
+            background: #ffe6e6; 
+            color: #d63031; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 15px 0; 
+            border-left: 4px solid #d63031;
+        }
+        .success-box { 
+            background: #e6ffe6; 
+            color: #00b894; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 15px 0; 
+            border-left: 4px solid #00b894;
+        }
+        .warning-box { 
+            background: #fff3cd; 
+            color: #856404; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 15px 0; 
+            border-left: 4px solid #ffc107;
+        }
+        .code { 
+            background: #2d2d2d; 
+            color: #f8f8f2; 
+            padding: 15px; 
+            border-radius: 5px; 
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .flex { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+        .section { margin: 25px 0; }
+    </style>
+    
+    <!-- CSS do João IA -->
+    <link rel="stylesheet" href="public/modules/joao-ia/joao-ia.css">
+    <!-- Font Awesome local para evitar CORS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 TESTE JOÃO IA - DIAGNÓSTICO COMPLETO</h1>
+        
+        <div class="warning-box">
+            <h3>⚠️ PROBLEMA DETECTADO: Erro 404 na API Gemini</h3>
+            <p>O sistema está tentando se conectar mas recebe "Not Found". Vamos diagnosticar...</p>
+        </div>
+
+        <div class="section">
+            <h3>🔍 DIAGNÓSTICO DA API</h3>
+            <div class="flex">
+                <button class="btn" onclick="testarConexao()">🔗 Testar Conexão API</button>
+                <button class="btn" onclick="verificarChave()">🔑 Verificar Chave API</button>
+                <button class="btn" onclick="testarURLCorreta()">🌐 Testar URL Corrigida</button>
+            </div>
+            <div id="diagnostico-result"></div>
+        </div>
+
+        <div class="section">
+            <h3>📊 STATUS DO SISTEMA</h3>
+            <div class="status-box">
+                <div id="status-text">Carregando...</div>
+            </div>
+            <div class="flex">
+                <button class="btn" onclick="atualizarStatus()">🔄 Atualizar Status</button>
+                <button class="btn btn-warning" onclick="limparCache()">🗑️ Limpar Cache</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🎯 TESTES DE MENSAGEM</h3>
+            <div class="warning-box">
+                <p><strong>MODO ATUAL:</strong> <span id="modo-atual">Local (Gemini com problemas)</span></p>
+            </div>
+            <div class="flex">
+                <button class="btn" onclick="testarMensagem('Olá')">👋 Saudação</button>
+                <button class="btn" onclick="testarMensagem('Como você está?')">🤖 Status</button>
+                <button class="btn" onclick="testarMensagem('Explique a Lei 10.639')">📚 Lei 10.639</button>
+                <button class="btn" onclick="testarMensagemGemini('Teste de conexão Gemini')">🧠 Teste Gemini</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔧 SOLUÇÕES</h3>
+            <div class="code">
+                // 1. VERIFIQUE SUA CHAVE API:<br>
+                // - Acesse: https://aistudio.google.com/<br>
+                // - Confirme se a chave está ativa<br>
+                // - Verifique se a API Gemini está habilitada<br><br>
+                
+                // 2. URL CORRETA DA API:<br>
+                // ✅ https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent<br>
+                // ❌ https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent<br><br>
+                
+                // 3. PROBLEMA DE CORS (arquivo local):<br>
+                // - Use um servidor local (Live Server no VSCode)<br>
+                // - Ou hospede em um domínio real
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📝 LOGS EM TEMPO REAL</h3>
+            <div class="code" id="logs" style="height: 200px; overflow-y: auto; font-size: 12px;">
+                Aguardando logs...
+            </div>
+            <button class="btn" onclick="document.getElementById('logs').innerHTML = 'Logs limpos...'">🧹 Limpar Logs</button>
+        </div>
+    </div>
+
+    <!-- João IA Widget -->
+    <script 
+        src="public/modules/joao-ia/joao-ia.js"
+        data-gemini-key="AIzaSyDyCyKyVKWULk6wF_aMIeyr0GijrL0Stbg"
+        data-bot-name="João"
+        data-theme="auto"
+        data-position="bottom-right"
+        data-auto-init="true">
+    </script>
+
+    <script>
+        // Sistema de logs
+        function adicionarLog(mensagem, tipo = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const cor = tipo === 'error' ? '#ff6b6b' : tipo === 'success' ? '#51cf66' : '#339af0';
+            logs.innerHTML += `<div style="color: ${cor}; margin: 2px 0;">[${timestamp}] ${mensagem}</div>`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // Funções de diagnóstico
+        async function testarConexao() {
+            adicionarLog('🔗 Testando conexão com a API Gemini...');
+            
+            if (typeof JoaoIA === 'undefined') {
+                adicionarLog('❌ João IA não carregado', 'error');
+                return;
+            }
+
+            try {
+                const resultado = await JoaoIA.verifyApiKey();
+                document.getElementById('diagnostico-result').innerHTML = 
+                    `<div class="${resultado.valid ? 'success-box' : 'error-box'}">${resultado.error || resultado.message}</div>`;
+                
+                if (resultado.valid) {
+                    adicionarLog('✅ Conexão com API estabelecida com sucesso!', 'success');
+                } else {
+                    adicionarLog(`❌ ${resultado.error}`, 'error');
+                }
+            } catch (error) {
+                adicionarLog(`❌ Erro no teste: ${error.message}`, 'error');
+            }
+        }
+
+        function verificarChave() {
+            const status = JoaoIA.getGeminiStatus();
+            adicionarLog(`🔑 Status da chave: ${status.configured ? 'Configurada' : 'Não configurada'}`);
+            adicionarLog(`🤖 Modelo: ${status.model}`);
+            adicionarLog(`🔑 Chave: ${status.hasApiKey ? 'Presente' : 'Ausente'}`);
+            
+            document.getElementById('diagnostico-result').innerHTML = `
+                <div class="status-box">
+                    <strong>Configuração Gemini:</strong><br>
+                    - Configurado: ${status.configured ? '✅' : '❌'}<br>
+                    - Modelo: ${status.model}<br>
+                    - Chave API: ${status.hasApiKey ? '✅ Presente' : '❌ Ausente'}<br>
+                    - URL API: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+                </div>
+            `;
+        }
+
+        async function testarURLCorreta() {
+            adicionarLog('🌐 Testando URL corrigida da API...');
+            
+            // Teste direto com a URL corrigida
+            const testUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+            const testKey = 'AIzaSyDyCyKyVKWULk6wF_aMIeyr0GijrL0Stbg';
+            
+            try {
+                const response = await fetch(`${testUrl}?key=${testKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: "Teste de conexão" }] }]
+                    })
+                });
+                
+                adicionarLog(`📡 Resposta da API: ${response.status} ${response.statusText}`);
+                
+                if (response.ok) {
+                    adicionarLog('✅ URL corrigida funciona!', 'success');
+                } else {
+                    const errorData = await response.json();
+                    adicionarLog(`❌ Erro ${response.status}: ${JSON.stringify(errorData)}`, 'error');
+                }
+            } catch (error) {
+                adicionarLog(`❌ Erro de rede: ${error.message}`, 'error');
+            }
+        }
+
+        function atualizarStatus() {
+            if (typeof JoaoIA === 'undefined') {
+                document.getElementById('status-text').innerHTML = '❌ João IA não carregado';
+                return;
+            }
+
+            const status = JoaoIA.getGeminiStatus();
+            const avatarStatus = JoaoIA.getAvatarStatus();
+            
+            document.getElementById('status-text').innerHTML = `
+                <strong>Gemini:</strong> ${status.configured ? '✅ Configurado' : '❌ Não configurado'}<br>
+                <strong>Modelo:</strong> ${status.model}<br>
+                <strong>Chave API:</strong> ${status.hasApiKey ? '✅ Presente' : '❌ Ausente'}<br>
+                <strong>Avatar:</strong> ${avatarStatus.loaded ? '✅ Carregado' : '❌ Não carregado'}<br>
+                <strong>URL Avatar:</strong> ${avatarStatus.url}<br>
+                <strong>Mensagens no histórico:</strong> ${JoaoIA.messages ? JoaoIA.messages.length : 0}
+            `;
+            
+            // Atualizar modo atual
+            const modoElement = document.getElementById('modo-atual');
+            modoElement.textContent = status.configured ? 'Gemini' : 'Local (Gemini com problemas)';
+            modoElement.style.color = status.configured ? '#28a745' : '#dc3545';
+            
+            adicionarLog('✅ Status atualizado');
+        }
+
+        function testarMensagem(mensagem) {
+            adicionarLog(`📨 Enviando mensagem: "${mensagem}"`);
+            JoaoIA.sendMessage(mensagem);
+            JoaoIA.open();
+        }
+
+        function testarMensagemGemini(mensagem) {
+            adicionarLog(`🧠 Teste Gemini: "${mensagem}"`);
+            if (JoaoIA.getGeminiStatus().configured) {
+                JoaoIA.sendMessage(mensagem);
+                JoaoIA.open();
+            } else {
+                adicionarLog('❌ Gemini não configurado para teste', 'error');
+            }
+        }
+
+        function limparCache() {
+            localStorage.clear();
+            adicionarLog('🗑️ Cache limpo. Recarregue a página.', 'warning');
+        }
+
+        // Inicialização
+        window.addEventListener('load', function() {
+            adicionarLog('🚀 Página carregada. Iniciando diagnóstico...');
+            setTimeout(() => {
+                atualizarStatus();
+                adicionarLog('✅ Sistema pronto para testes');
+            }, 2000);
+        });
+
+        // Capturar logs do João IA
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            if (args[0] && typeof args[0] === 'string') {
+                if (args[0].includes('Gemini') || args[0].includes('João IA')) {
+                    adicionarLog(args[0]);
+                }
+            }
+        };
+        
+        console.error = function(...args) {
+            originalConsoleError.apply(console, args);
+            if (args[0] && typeof args[0] === 'string') {
+                adicionarLog(`❌ ${args[0]}`, 'error');
+            }
+        };
+    </script>
+</body>
+</html>
