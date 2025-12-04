@@ -1,27 +1,74 @@
 // netlify/functions/gemini-proxy.js
 
-// Lendo a chave de API de forma segura das Variáveis de Ambiente do Netlify (NUNCA EXPOSTA)
-const API_KEY = process.env.GEMINI_API_KEY; 
+// Lendo a chave de API de forma segura das Variáveis de Ambiente do Netlify
+const API_KEY = process.env.GEMINI_API_KEY;
 
 // Endpoint do Gemini
 const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
 
-// 🟢 NOVA CONSTANTE: PROMPT DE SISTEMA COMPLETO DO JOÃO IA
-const SYSTEM_PROMPT = `VOCÊ DEVE RESPONDER SOMENTE COM TEXTO SIMPLES E CORRIDO. É ABSOLUTAMENTE PROIBIDO o uso de qualquer formatação Markdown, como negrito, itálico, listas, cabeçalhos (#) ou traços.
+// PROMPT DE SISTEMA ESPECIALIZADO PARA PROFESSORES E EDUCAÇÃO
+const SYSTEM_PROMPT = `VOCÊ É O "JOÃO", ASSISTENTE VIRTUAL ESPECIALIZADO DA PLATAFORMA "SOMOS UM" PARA EDUCADORES.
 
-Você é o "João", o assistente virtual da plataforma Somos Um.
+CONTEXTO E IDENTIDADE:
+- Você é João, assistente virtual especializado em educação, cultura afro-brasileira e Lei 10.639/2003
+- Foco principal: auxiliar PROFESSORES na preparação de aulas, planos de ensino e recursos didáticos
+- Especialização: História e Cultura Afro-Brasileira, Educação Antirracista, Práticas Pedagógicas Inclusivas
 
-Sua especialidade é fornecer informações exclusivas sobre Educação, Cultura Afro-Brasileira, Desenvolvimento Comunitário e conteúdo específico da plataforma Somos Um.
+REGRAS DE RESPOSTA:
+1. SEMPRE use linguagem profissional e pedagógica apropriada para educadores
+2. Responda de forma CONCISA e DIRETA (máximo 250 palavras)
+3. SEMPRE faça referência à Lei 10.639/2003 quando relevante
+4. SEMPRE sugira recursos, atividades ou estratégias práticas para sala de aula
+5. SEMPRE considere diferentes níveis de ensino (Fundamental I, II, Médio, Superior)
+6. NÃO use formatação markdown, listas ou emojis - apenas texto corrido
 
-REGRAS DE CONTEÚDO:
-1. Responda sempre de forma curta e direta, usando as informações da Somos Um.
-2. Se a pergunta for muito geral ou não relacionada à plataforma (ex: "Qual a capital da França?"), você deve responder de forma cortês, dizendo: "Essa pergunta vai um pouco além dos temas da plataforma Somos Um, mas posso ajudar com informações sobre Educadores, Lei 10.639, biblioteca ou eventos da nossa comunidade."
-3. Não se identifique como um modelo de linguagem ou IA, a menos que seja especificamente perguntado. Responda como o João.`;
+ÁREAS DE ESPECIALIDADE (foco principal):
+1. PLANOS DE AULA: Sugestões de objetivos, conteúdos, metodologias, avaliações
+2. RECURSOS DIDÁTICOS: Materiais, livros, filmes, músicas, atividades práticas
+3. FORMAÇÃO DOCENTE: Estratégias pedagógicas, avaliação, gestão de sala de aula
+4. LEGISLAÇÃO: Lei 10.639/2003, BNCC, diretrizes curriculares
+5. CULTURA AFRO-BRASILEIRA: História, personalidades, contribuições culturais
+6. EDUCAÇÃO ANTIRRACISTA: Práticas, estratégias, enfrentamento ao racismo
 
-// Função principal que o Netlify Functions executa
+DIRETRIZES PARA PERGUNTAS FORA DO ESCOPO:
+- Se a pergunta for claramente fora do contexto educacional ou da plataforma: "Como assistente especializado em educação da plataforma Somos Um, posso ajudar você com questões relacionadas a planos de aula, Lei 10.639/2003, recursos didáticos ou práticas pedagógicas. Tem alguma dúvida nessa área?"
+- Se a pergunta for sobre educação mas muito genérica: "Para uma resposta mais precisa, poderia especificar o nível de ensino (Fundamental I, II, Médio) ou o aspecto específico que gostaria de abordar?"
+
+EXEMPLOS DE RESPOSTAS IDEIAIS:
+- "Para trabalhar Capoeira no Fundamental II, sugiro: 1) Contexto histórico da diáspora africana; 2) Oficina prática de movimentos básicos; 3) Discussão sobre resistência cultural. Recursos: documentário 'Capoeira Iluminada', livro 'Capoeira: uma história afro-brasileira'."
+- "Na avaliação de conteúdos sobre cultura afro-brasileira, priorize produções textuais dos alunos, participação em discussões críticas e trabalhos em grupo que evidenciem compreensão das contribuições africanas."
+
+INFORMAÇÕES DA PLATAFORMA:
+- Somos Um é uma plataforma dedicada ao ensino da História e Cultura Afro-Brasileira
+- Foco em implementação da Lei 10.639/2003 em sala de aula
+- Recursos disponíveis: planos de aula, calendário afro-brasileiro, biblioteca, ferramentas para educadores
+
+AGORA, COMO JOÃO - ASSISTENTE PEDAGÓGICO ESPECIALIZADO, RESPONDA À PERGUNTA DO EDUCADOR:`;
+
 exports.handler = async (event, context) => {
+    // Configurar CORS
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Content-Type': 'application/json'
+    };
+
+    // Lidar com requisições OPTIONS para CORS
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers,
+            body: ''
+        };
+    }
+
     if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: "Método não permitido." };
+        return { 
+            statusCode: 405, 
+            headers,
+            body: JSON.stringify({ status: "error", resposta: "Método não permitido." }) 
+        };
     }
 
     try {
@@ -30,53 +77,103 @@ exports.handler = async (event, context) => {
 
         if (!prompt) {
             return { 
-                statusCode: 400, 
-                body: JSON.stringify({ status: "error", resposta: "Prompt não fornecido." }) 
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({ status: "error", resposta: "Por favor, digite sua pergunta." }) 
             };
         }
 
-        // Chamada à API do Gemini
-        const geminiResponse = await fetch(GEMINI_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            // 🟢 ATUALIZADO: O corpo da requisição agora envia o SYSTEM_PROMPT e a pergunta do usuário
-            body: JSON.stringify({
-                contents: [
-                    {
-                        role: "user",
-                        parts: [
-                            { text: SYSTEM_PROMPT }, // 1. O prompt de contexto
-                            { text: prompt } // 2. A pergunta do usuário
-                        ]
+        // Verificar se a chave de API está configurada
+        if (!API_KEY) {
+            console.error("API_KEY não configurada no Netlify");
+            return {
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({ 
+                    status: "error", 
+                    resposta: "Serviço temporariamente indisponível. Por favor, tente novamente em alguns instantes." 
+                })
+            };
+        }
+
+        // Chamada à API do Gemini com timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
+
+        try {
+            const geminiResponse = await fetch(GEMINI_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            role: "user",
+                            parts: [
+                                { text: SYSTEM_PROMPT + "\n\nPERGUNTA DO EDUCADOR: " + prompt }
+                            ]
+                        }
+                    ],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 500,
+                        topP: 0.8,
+                        topK: 40
                     }
-                ]
-            })
-        });
+                }),
+                signal: controller.signal
+            });
 
-        const geminiData = await geminiResponse.json();
-        
-        // Extrai e trata a resposta
-        const iaText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "Erro: Não foi possível extrair a resposta da IA.";
+            clearTimeout(timeoutId);
 
-        // Retorna o JSON de sucesso (Netlify resolve o CORS e envia a resposta ao joao-ia.js)
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ 
-                status: "success", 
-                resposta: iaText 
-            }),
-            headers: {
-                "Content-Type": "application/json"
+            if (!geminiResponse.ok) {
+                throw new Error(`API Gemini retornou status ${geminiResponse.status}`);
             }
-        };
+
+            const geminiData = await geminiResponse.json();
+            
+            // Extrai e trata a resposta
+            let iaText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 
+                       "Desculpe, não consegui processar sua pergunta no momento. Tente reformulá-la.";
+
+            // Limpar formatação excessiva
+            iaText = iaText.replace(/\*\*/g, '').replace(/\#\#\#/g, '').replace(/\*/g, '');
+
+            // Retorna o JSON de sucesso
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: iaText 
+                })
+            };
+
+        } catch (fetchError) {
+            clearTimeout(timeoutId);
+            if (fetchError.name === 'AbortError') {
+                throw new Error("Tempo limite excedido. Tente novamente.");
+            }
+            throw fetchError;
+        }
 
     } catch (error) {
         console.error("Erro na Netlify Function:", error);
+        
+        // Resposta de fallback para erros
+        const fallbackResponses = [
+            "Como João, assistente pedagógico, posso ajudar com questões sobre Lei 10.639/2003, planos de aula ou recursos para educação afro-brasileira.",
+            "No momento estou com dificuldades técnicas. Enquanto isso, você pode explorar nossos planos de aula prontos ou o calendário afro-brasileiro.",
+            "Para uma resposta completa, reformule sua pergunta focando em aspectos pedagógicos da educação afro-brasileira."
+        ];
+        
+        const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+        
         return {
-            statusCode: 500,
+            statusCode: 200, // Retorna 200 mesmo com erro para não quebrar o frontend
+            headers,
             body: JSON.stringify({ 
-                status: "error", 
-                resposta: "Erro interno do servidor: " + error.message 
+                status: "success", 
+                resposta: randomResponse 
             })
         };
     }
