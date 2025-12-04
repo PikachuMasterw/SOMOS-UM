@@ -1,30 +1,31 @@
 /* ========== MÓDULO JOÃO IA - DESIGN MODERNO ========== */
 :root {
-  --joao-primary: #A55734;
-  --joao-primary-dark: #8C472A;
+  --joao-primary: #a55734;
+  --joao-primary-dark: #8c472a;
   --joao-secondary: #3498db;
-  --joao-accent: #FF6B35;
-  --joao-gold: #FFD700;
-  
+  --joao-accent: #ff6b35;
+  --joao-gold: #ffd700;
+
   --joao-bg-light: #ffffff;
   --joao-surface-light: rgba(255, 255, 255, 0.9);
   --joao-text-light: #2c3e50;
   --joao-border-light: rgba(0, 0, 0, 0.1);
-  
+
   --joao-bg-dark: #0f172a;
   --joao-surface-dark: rgba(30, 41, 59, 0.9);
   --joao-text-dark: #f1f5f9;
   --joao-border-dark: rgba(255, 255, 255, 0.1);
-  
+
   --joao-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   --joao-border-radius: 24px;
   --joao-border-radius-sm: 16px;
   --joao-border-radius-lg: 32px;
-  
+
   --joao-glow: 0 0 40px rgba(165, 87, 52, 0.3);
   --joao-glow-hover: 0 0 60px rgba(165, 87, 52, 0.5);
-  
-  --joao-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+
+  --joao-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
 }
 
 /* ========== CONTAINER PRINCIPAL ========== */
@@ -59,10 +60,10 @@
   animation: float 6s ease-in-out infinite;
   overflow: hidden;
   padding: 0;
-  background-image: url('./assets/images/joao-avatar.png'),
-                   url('../assets/images/joao-avatar.png'),
-                   url('../../assets/images/joao-avatar.png'),
-                   url('/modules/joao-ia/assets/images/joao-avatar.png');
+  background-image: url("./assets/images/joao-avatar.png"),
+    url("../assets/images/joao-avatar.png"),
+    url("../../assets/images/joao-avatar.png"),
+    url("/modules/joao-ia/assets/images/joao-avatar.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -86,8 +87,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* ========== WINDOW - GLASS EFFECT ========== */
@@ -101,9 +107,8 @@
   max-height: 80vh;
   background: var(--joao-surface-light);
   border-radius: var(--joao-border-radius-lg);
-  box-shadow: var(--joao-shadow), 
-              inset 1px 1px 0px rgba(255, 255, 255, 0.5),
-              inset -1px -1px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--joao-shadow), inset 1px 1px 0px rgba(255, 255, 255, 0.5),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.05);
   display: none;
   flex-direction: column;
   overflow: hidden;
@@ -129,14 +134,17 @@
 .joao-ia-theme-dark .joao-ia-window {
   background: var(--joao-surface-dark);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--joao-shadow),
-              inset 1px 1px 0px rgba(255, 255, 255, 0.05),
-              inset -1px -1px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--joao-shadow), inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.2);
 }
 
 /* ========== HEADER ========== */
 .joao-ia-header {
-  background: linear-gradient(135deg, var(--joao-primary), var(--joao-primary-dark));
+  background: linear-gradient(
+    135deg,
+    var(--joao-primary),
+    var(--joao-primary-dark)
+  );
   color: white;
   padding: 20px;
   display: flex;
@@ -168,10 +176,10 @@
   background-position: center;
   border: 3px solid rgba(255, 255, 255, 0.8);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  background-image: url('./assets/images/joao-avatar.png'),
-                   url('../assets/images/joao-avatar.png'),
-                   url('../../assets/images/joao-avatar.png'),
-                   url('/modules/joao-ia/assets/images/joao-avatar.png');
+  background-image: url("./assets/images/joao-avatar.png"),
+    url("../assets/images/joao-avatar.png"),
+    url("../../assets/images/joao-avatar.png"),
+    url("/modules/joao-ia/assets/images/joao-avatar.png");
 }
 
 .joao-ia-avatar-img {
@@ -224,18 +232,22 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: linear-gradient(180deg, 
-    rgba(248, 249, 250, 0.9) 0%, 
-    rgba(255, 255, 255, 0.7) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(248, 249, 250, 0.9) 0%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   min-height: 0; /* Permite que o contêiner encolha */
 }
 
 .joao-ia-theme-dark .joao-ia-messages {
-  background: linear-gradient(180deg, 
-    rgba(30, 41, 59, 0.9) 0%, 
-    rgba(15, 23, 42, 0.7) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(30, 41, 59, 0.9) 0%,
+    rgba(15, 23, 42, 0.7) 100%
+  );
 }
 
 /* ========== MESSAGES STYLES ========== */
@@ -265,9 +277,11 @@
 /* Bot Message */
 .joao-ia-bot-message {
   align-self: flex-start;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.95) 0%, 
-    rgba(248, 249, 250, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 249, 250, 0.95) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.8);
   color: var(--joao-text-light);
   border-top-left-radius: 4px;
@@ -276,7 +290,7 @@
 }
 
 .joao-ia-bot-message::before {
-  content: '';
+  content: "";
   position: absolute;
   left: -8px;
   top: 20px;
@@ -287,9 +301,11 @@
 }
 
 .joao-ia-theme-dark .joao-ia-bot-message {
-  background: linear-gradient(135deg, 
-    rgba(30, 41, 59, 0.95) 0%, 
-    rgba(15, 23, 42, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.95) 0%,
+    rgba(15, 23, 42, 0.95) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--joao-text-dark);
 }
@@ -313,10 +329,18 @@
   color: var(--joao-primary);
 }
 
-.joao-ia-bot-message h1 { font-size: 1.4rem; }
-.joao-ia-bot-message h2 { font-size: 1.3rem; }
-.joao-ia-bot-message h3 { font-size: 1.2rem; }
-.joao-ia-bot-message h4 { font-size: 1.1rem; }
+.joao-ia-bot-message h1 {
+  font-size: 1.4rem;
+}
+.joao-ia-bot-message h2 {
+  font-size: 1.3rem;
+}
+.joao-ia-bot-message h3 {
+  font-size: 1.2rem;
+}
+.joao-ia-bot-message h4 {
+  font-size: 1.1rem;
+}
 
 .joao-ia-bot-message strong {
   font-weight: 700;
@@ -353,7 +377,7 @@
   background: rgba(165, 87, 52, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.9em;
 }
 
@@ -522,16 +546,24 @@
   animation: typingBounce 1.4s infinite ease-in-out both;
 }
 
-.joao-ia-typing-dot:nth-child(1) { animation-delay: -0.32s; }
-.joao-ia-typing-dot:nth-child(2) { animation-delay: -0.16s; }
-.joao-ia-typing-dot:nth-child(3) { animation-delay: 0s; }
+.joao-ia-typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.joao-ia-typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+.joao-ia-typing-dot:nth-child(3) {
+  animation-delay: 0s;
+}
 
 @keyframes typingBounce {
-  0%, 80%, 100% { 
+  0%,
+  80%,
+  100% {
     transform: scale(0.8);
     opacity: 0.5;
   }
-  40% { 
+  40% {
     transform: scale(1.2);
     opacity: 1;
   }
@@ -578,7 +610,7 @@
     right: 20px;
     left: 20px;
   }
-  
+
   .joao-ia-window {
     width: calc(100vw - 40px);
     height: 70vh;
@@ -588,34 +620,34 @@
     margin: 0 auto;
     bottom: 90px;
   }
-  
+
   .joao-ia-toggle {
     width: 65px;
     height: 65px;
   }
-  
+
   .joao-ia-header h3 {
     font-size: 1.2rem;
   }
-  
+
   .joao-ia-avatar,
   .joao-ia-avatar-img {
     width: 40px;
     height: 40px;
   }
-  
+
   .joao-ia-message {
     max-width: 90%;
     padding: 15px 18px;
     font-size: 0.95rem;
   }
-  
+
   .joao-ia-suggestions {
     padding: 12px 15px;
     max-height: 60px;
     min-height: 60px;
   }
-  
+
   .joao-ia-suggestion-chip {
     padding: 8px 15px;
     font-size: 0.8rem;
@@ -628,34 +660,51 @@
     bottom: 85px;
     border-radius: var(--joao-border-radius);
   }
-  
+
   .joao-ia-toggle {
     width: 55px;
     height: 55px;
   }
-  
+
   .joao-ia-input-area {
     padding: 15px;
   }
-  
+
   .joao-ia-input {
     padding: 14px 20px;
     font-size: 0.95rem;
   }
-  
+
   .joao-ia-send {
     width: 45px;
     height: 45px;
   }
-  
+
   .joao-ia-suggestion-chip {
     padding: 7px 14px;
     font-size: 0.75rem;
   }
-  
+
   .joao-ia-suggestions {
     padding: 10px 15px;
     max-height: 55px;
     min-height: 55px;
+  }
+
+  .joao-ia-bot-message {
+    white-space: pre-wrap; /* Preserva quebras de linha */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  .joao-ia-message {
+    line-height: 1.5;
+    font-size: 14px;
+  }
+
+  .joao-ia-messages {
+    overflow-y: auto;
+    max-height: 400px;
   }
 }
