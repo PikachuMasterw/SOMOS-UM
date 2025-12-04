@@ -46,16 +46,24 @@ INFORMAÇÕES DA PLATAFORMA:
 AGORA, COMO JOÃO - ASSISTENTE PEDAGÓGICO ESPECIALIZADO, RESPONDA À PERGUNTA DO EDUCADOR:`;
 
 exports.handler = async (event, context) => {
+    // ========== LOG INICIAL ==========
+    console.log("=== GEMINI PROXY CHAMADO ===");
+    console.log("Método HTTP:", event.httpMethod);
+    console.log("Path:", event.path);
+    console.log("Headers:", event.headers);
+    
     // Configurar CORS
     const headers = {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+        'Access-Control-Max-Age': '86400',
         'Content-Type': 'application/json'
     };
 
     // Lidar com requisições OPTIONS para CORS
     if (event.httpMethod === 'OPTIONS') {
+        console.log("✅ Respondendo a requisição OPTIONS (CORS)");
         return {
             statusCode: 200,
             headers,
@@ -64,6 +72,7 @@ exports.handler = async (event, context) => {
     }
 
     if (event.httpMethod !== 'POST') {
+        console.log(`❌ Método ${event.httpMethod} não permitido`);
         return { 
             statusCode: 405, 
             headers,
@@ -72,10 +81,14 @@ exports.handler = async (event, context) => {
     }
 
     try {
+        console.log("📥 Corpo da requisição (raw):", event.body);
+        
         // Extrai o 'prompt' da requisição JSON do Front-end
         const { prompt } = JSON.parse(event.body);
+        console.log("📝 Prompt recebido:", prompt);
 
         if (!prompt) {
+            console.log("❌ Prompt vazio ou não fornecido");
             return { 
                 statusCode: 400,
                 headers,
@@ -83,9 +96,13 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Verificar se a chave de API está configurada
+        // ========== VERIFICAÇÃO DA CHAVE API ==========
+        console.log("🔑 Verificando API_KEY...");
+        console.log("API_KEY definida?", !!API_KEY);
+        console.log("API_KEY (primeiros 10 caracteres):", API_KEY ? API_KEY.substring(0, 10) + "..." : "NÃO DEFINIDA");
+        
         if (!API_KEY) {
-            console.error("API_KEY não configurada no Netlify");
+            console.error("❌ API_KEY não configurada no Netlify");
             return {
                 statusCode: 500,
                 headers,
@@ -95,12 +112,18 @@ exports.handler = async (event, context) => {
                 })
             };
         }
+        
+        console.log("✅ API_KEY verificada com sucesso");
 
         // Chamada à API do Gemini com timeout
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 segundos timeout
+        console.log("⏱️  Timeout configurado: 15 segundos");
 
         try {
+            console.log("🚀 Enviando requisição para API Gemini...");
+            console.log("🔗 Endpoint (sem key):", GEMINI_ENDPOINT.substring(0, GEMINI_ENDPOINT.indexOf("key=")) + "key=***");
+            
             const geminiResponse = await fetch(GEMINI_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -124,19 +147,38 @@ exports.handler = async (event, context) => {
             });
 
             clearTimeout(timeoutId);
+            console.log("📥 Resposta do Gemini recebida");
+            console.log("📊 Status:", geminiResponse.status, geminiResponse.statusText);
 
+            // ========== LOG DE ERRO DETALHADO ==========
             if (!geminiResponse.ok) {
-                throw new Error(`API Gemini retornou status ${geminiResponse.status}`);
+                console.error(`❌ Erro de Status HTTP da API Gemini: ${geminiResponse.status}`);
+                
+                // Tentar obter mais detalhes do erro
+                let errorBody = "Não foi possível obter corpo do erro";
+                try {
+                    errorBody = await geminiResponse.text();
+                    console.error("📄 Corpo do erro da API Gemini:", errorBody);
+                } catch (e) {
+                    console.error("❌ Não foi possível ler corpo do erro:", e.message);
+                }
+                
+                throw new Error(`API Gemini retornou status ${geminiResponse.status}: ${errorBody.substring(0, 200)}`);
             }
 
             const geminiData = await geminiResponse.json();
+            console.log("✅ Dados recebidos da Gemini com sucesso");
+            console.log("📦 Estrutura dos dados:", Object.keys(geminiData));
             
             // Extrai e trata a resposta
             let iaText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 
                        "Desculpe, não consegui processar sua pergunta no momento. Tente reformulá-la.";
 
+            console.log("✍️ Resposta da IA (original, primeiros 200 chars):", iaText.substring(0, 200) + "...");
+
             // Limpar formatação excessiva
             iaText = iaText.replace(/\*\*/g, '').replace(/\#\#\#/g, '').replace(/\*/g, '');
+            console.log("✨ Resposta após limpeza de formatação");
 
             // Retorna o JSON de sucesso
             return {
@@ -150,14 +192,26 @@ exports.handler = async (event, context) => {
 
         } catch (fetchError) {
             clearTimeout(timeoutId);
+            console.error("❌ Erro na chamada fetch:", fetchError);
+            
             if (fetchError.name === 'AbortError') {
+                console.error("⏰ Timeout excedido (15 segundos)");
                 throw new Error("Tempo limite excedido. Tente novamente.");
             }
+            
+            // Log detalhado do erro
+            console.error("🔍 Detalhes do erro fetchError:", {
+                name: fetchError.name,
+                message: fetchError.message,
+                stack: fetchError.stack
+            });
+            
             throw fetchError;
         }
 
     } catch (error) {
-        console.error("Erro na Netlify Function:", error);
+        console.error("💥 Erro na Netlify Function:", error);
+        console.error("🔍 Stack trace completo:", error.stack);
         
         // Resposta de fallback para erros
         const fallbackResponses = [
@@ -167,6 +221,8 @@ exports.handler = async (event, context) => {
         ];
         
         const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+        
+        console.log("🔄 Retornando resposta de fallback:", randomResponse);
         
         return {
             statusCode: 200, // Retorna 200 mesmo com erro para não quebrar o frontend
