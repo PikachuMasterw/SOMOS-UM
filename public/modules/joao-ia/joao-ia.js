@@ -3,7 +3,7 @@
     'use strict';
     
     // ========== CONFIGURAÇÕES GLOBAIS ==========
-    const NETLIFY_ENDPOINT = '/api/gemini';
+    const NETLIFY_ENDPOINT = '/.netlify/functions/gemini-proxy';
     const REQUEST_TIMEOUT = 15000;
     
     // ========== FUNÇÕES AUXILIARES ==========
