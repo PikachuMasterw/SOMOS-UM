@@ -50,7 +50,6 @@ exports.handler = async (event, context) => {
     console.log("=== GEMINI PROXY CHAMADO ===");
     console.log("Método HTTP:", event.httpMethod);
     console.log("Path:", event.path);
-    console.log("Headers:", event.headers);
     
     // Configurar CORS
     const headers = {
@@ -80,156 +79,228 @@ exports.handler = async (event, context) => {
         };
     }
 
+    // ========== VERIFICAÇÃO INICIAL DO BODY ==========
+    console.log("📥 Corpo da requisição (raw):", event.body);
+    console.log("Tipo do body:", typeof event.body);
+    
+    let prompt;
     try {
-        console.log("📥 Corpo da requisição (raw):", event.body);
+        // Tente parsear o JSON - mas primeiro verifique se não está vazio
+        if (!event.body) {
+            console.log("❌ Body está vazio");
+            return {
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({ status: "error", resposta: "Body vazio." })
+            };
+        }
         
-        // Extrai o 'prompt' da requisição JSON do Front-end
-        const { prompt } = JSON.parse(event.body);
-        console.log("📝 Prompt recebido:", prompt);
-
+        const body = JSON.parse(event.body);
+        console.log("📝 Body parseado:", body);
+        
+        prompt = body.prompt;
+        
         if (!prompt) {
-            console.log("❌ Prompt vazio ou não fornecido");
+            console.log("❌ Campo 'prompt' não encontrado no body");
             return { 
                 statusCode: 400,
                 headers,
-                body: JSON.stringify({ status: "error", resposta: "Por favor, digite sua pergunta." }) 
+                body: JSON.stringify({ status: "error", resposta: "Por favor, digite sua pergunta no campo 'prompt'." }) 
             };
         }
-
-        // ========== VERIFICAÇÃO DA CHAVE API ==========
-        console.log("🔑 Verificando API_KEY...");
-        console.log("API_KEY definida?", !!API_KEY);
-        console.log("API_KEY (primeiros 10 caracteres):", API_KEY ? API_KEY.substring(0, 10) + "..." : "NÃO DEFINIDA");
         
-        if (!API_KEY) {
-            console.error("❌ API_KEY não configurada no Netlify");
+        console.log("✅ Prompt extraído:", prompt);
+        
+    } catch (parseError) {
+        console.error("❌ Erro ao parsear JSON:", parseError);
+        console.error("Conteúdo que falhou:", event.body);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                status: "error", 
+                resposta: "Formato de requisição inválido. Envie um JSON válido com campo 'prompt'." 
+            })
+        };
+    }
+
+    // ========== VERIFICAÇÃO DA CHAVE API ==========
+    console.log("🔑 Verificando API_KEY...");
+    console.log("API_KEY definida?", !!API_KEY);
+    
+    // Log seguro da chave (apenas primeiros e últimos caracteres)
+    if (API_KEY) {
+        const maskedKey = API_KEY.substring(0, 5) + "..." + API_KEY.substring(API_KEY.length - 5);
+        console.log("API_KEY (mascarada):", maskedKey);
+    } else {
+        console.log("❌ API_KEY não definida!");
+    }
+    
+    if (!API_KEY) {
+        console.error("❌ API_KEY não configurada no Netlify");
+        return {
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ 
+                status: "error", 
+                resposta: "Erro de configuração do servidor. API KEY não encontrada." 
+            })
+        };
+    }
+    
+    console.log("✅ API_KEY verificada com sucesso");
+
+    // ========== CHAMADA À API GEMINI ==========
+    console.log("🚀 Preparando chamada para API Gemini...");
+    console.log("🔗 Endpoint (mascarado):", GEMINI_ENDPOINT.replace(API_KEY, "API_KEY_OCULTADA"));
+    
+    try {
+        // Chamada à API do Gemini com timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos timeout
+        console.log("⏱️  Timeout configurado: 30 segundos");
+        
+        const requestBody = {
+            contents: [
+                {
+                    role: "user",
+                    parts: [
+                        { text: SYSTEM_PROMPT + "\n\nPERGUNTA DO EDUCADOR: " + prompt }
+                    ]
+                }
+            ],
+            generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 500,
+                topP: 0.8,
+                topK: 40
+            }
+        };
+        
+        console.log("📦 Request body para Gemini (primeiros 500 chars):", 
+                   JSON.stringify(requestBody).substring(0, 500) + "...");
+        
+        const geminiResponse = await fetch(GEMINI_ENDPOINT, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestBody),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+        console.log("📥 Resposta do Gemini recebida");
+        console.log("📊 Status:", geminiResponse.status, geminiResponse.statusText);
+        console.log("📊 Headers da resposta:", JSON.stringify(Object.fromEntries(geminiResponse.headers.entries())));
+
+        // ========== TRATAMENTO DE ERROS DA API GEMINI ==========
+        if (!geminiResponse.ok) {
+            console.error(`❌ Erro de Status HTTP da API Gemini: ${geminiResponse.status}`);
+            
+            // Tentar obter mais detalhes do erro
+            let errorBody = "Não foi possível obter corpo do erro";
+            try {
+                errorBody = await geminiResponse.text();
+                console.error("📄 Corpo do erro da API Gemini:", errorBody);
+            } catch (e) {
+                console.error("❌ Não foi possível ler corpo do erro:", e.message);
+            }
+            
+            // Retornar erro amigável baseado no status
+            let errorMessage = "Erro ao processar sua pergunta. Tente novamente.";
+            if (geminiResponse.status === 400) {
+                errorMessage = "Erro na requisição para a IA. Verifique o formato da pergunta.";
+            } else if (geminiResponse.status === 403) {
+                errorMessage = "Problema de autenticação com o serviço de IA.";
+            } else if (geminiResponse.status === 429) {
+                errorMessage = "Limite de requisições excedido. Tente novamente em alguns instantes.";
+            } else if (geminiResponse.status === 500) {
+                errorMessage = "Erro interno no serviço de IA. Tente novamente mais tarde.";
+            }
+            
             return {
-                statusCode: 500,
+                statusCode: 200, // Retorna 200 para não quebrar frontend
                 headers,
                 body: JSON.stringify({ 
                     status: "error", 
-                    resposta: "Serviço temporariamente indisponível. Por favor, tente novamente em alguns instantes." 
+                    resposta: errorMessage,
+                    debug: `Status ${geminiResponse.status}`
                 })
             };
         }
+
+        // ========== PROCESSAMENTO DA RESPOSTA BEM-SUCEDIDA ==========
+        const geminiData = await geminiResponse.json();
+        console.log("✅ Dados recebidos da Gemini com sucesso");
+        console.log("📦 Estrutura dos dados recebidos:", Object.keys(geminiData));
         
-        console.log("✅ API_KEY verificada com sucesso");
-
-        // Chamada à API do Gemini com timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 segundos timeout
-        console.log("⏱️  Timeout configurado: 15 segundos");
-
-        try {
-            console.log("🚀 Enviando requisição para API Gemini...");
-            console.log("🔗 Endpoint (sem key):", GEMINI_ENDPOINT.substring(0, GEMINI_ENDPOINT.indexOf("key=")) + "key=***");
+        // Extrai a resposta
+        let iaText = "Desculpe, não consegui processar sua pergunta no momento. Tente reformulá-la.";
+        
+        if (geminiData.candidates && geminiData.candidates[0] && 
+            geminiData.candidates[0].content && 
+            geminiData.candidates[0].content.parts && 
+            geminiData.candidates[0].content.parts[0]) {
             
-            const geminiResponse = await fetch(GEMINI_ENDPOINT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [
-                        {
-                            role: "user",
-                            parts: [
-                                { text: SYSTEM_PROMPT + "\n\nPERGUNTA DO EDUCADOR: " + prompt }
-                            ]
-                        }
-                    ],
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 500,
-                        topP: 0.8,
-                        topK: 40
-                    }
-                }),
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-            console.log("📥 Resposta do Gemini recebida");
-            console.log("📊 Status:", geminiResponse.status, geminiResponse.statusText);
-
-            // ========== LOG DE ERRO DETALHADO ==========
-            if (!geminiResponse.ok) {
-                console.error(`❌ Erro de Status HTTP da API Gemini: ${geminiResponse.status}`);
-                
-                // Tentar obter mais detalhes do erro
-                let errorBody = "Não foi possível obter corpo do erro";
-                try {
-                    errorBody = await geminiResponse.text();
-                    console.error("📄 Corpo do erro da API Gemini:", errorBody);
-                } catch (e) {
-                    console.error("❌ Não foi possível ler corpo do erro:", e.message);
-                }
-                
-                throw new Error(`API Gemini retornou status ${geminiResponse.status}: ${errorBody.substring(0, 200)}`);
-            }
-
-            const geminiData = await geminiResponse.json();
-            console.log("✅ Dados recebidos da Gemini com sucesso");
-            console.log("📦 Estrutura dos dados:", Object.keys(geminiData));
+            iaText = geminiData.candidates[0].content.parts[0].text;
+            console.log("✍️ Resposta da IA (tamanho):", iaText.length, "caracteres");
+            console.log("✍️ Resposta da IA (primeiros 300 chars):", iaText.substring(0, 300) + "...");
             
-            // Extrai e trata a resposta
-            let iaText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 
-                       "Desculpe, não consegui processar sua pergunta no momento. Tente reformulá-la.";
+        } else {
+            console.warn("⚠️ Estrutura de resposta inesperada:", JSON.stringify(geminiData).substring(0, 500));
+        }
 
-            console.log("✍️ Resposta da IA (original, primeiros 200 chars):", iaText.substring(0, 200) + "...");
+        // Limpar formatação excessiva (mantendo quebras de linha)
+        iaText = iaText
+            .replace(/\*\*/g, '')
+            .replace(/\#\#\#/g, '')
+            .replace(/\*/g, '')
+            .replace(/\\n/g, '\n')
+            .trim();
 
-            // Limpar formatação excessiva
-            iaText = iaText.replace(/\*\*/g, '').replace(/\#\#\#/g, '').replace(/\*/g, '');
-            console.log("✨ Resposta após limpeza de formatação");
+        console.log("✨ Resposta final processada");
+        
+        // Retorna o JSON de sucesso
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ 
+                status: "success", 
+                resposta: iaText 
+            })
+        };
 
-            // Retorna o JSON de sucesso
+    } catch (fetchError) {
+        console.error("❌ Erro na chamada fetch para Gemini:", fetchError);
+        
+        // Log detalhado do erro
+        console.error("🔍 Detalhes do erro fetchError:", {
+            name: fetchError.name,
+            message: fetchError.message,
+            stack: fetchError.stack
+        });
+        
+        if (fetchError.name === 'AbortError') {
+            console.error("⏰ Timeout excedido (30 segundos)");
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: iaText 
+                    status: "error", 
+                    resposta: "Tempo limite excedido. Tente novamente com uma pergunta mais curta." 
                 })
             };
-
-        } catch (fetchError) {
-            clearTimeout(timeoutId);
-            console.error("❌ Erro na chamada fetch:", fetchError);
-            
-            if (fetchError.name === 'AbortError') {
-                console.error("⏰ Timeout excedido (15 segundos)");
-                throw new Error("Tempo limite excedido. Tente novamente.");
-            }
-            
-            // Log detalhado do erro
-            console.error("🔍 Detalhes do erro fetchError:", {
-                name: fetchError.name,
-                message: fetchError.message,
-                stack: fetchError.stack
-            });
-            
-            throw fetchError;
         }
-
-    } catch (error) {
-        console.error("💥 Erro na Netlify Function:", error);
-        console.error("🔍 Stack trace completo:", error.stack);
         
-        // Resposta de fallback para erros
-        const fallbackResponses = [
-            "Como João, assistente pedagógico, posso ajudar com questões sobre Lei 10.639/2003, planos de aula ou recursos para educação afro-brasileira.",
-            "No momento estou com dificuldades técnicas. Enquanto isso, você pode explorar nossos planos de aula prontos ou o calendário afro-brasileiro.",
-            "Para uma resposta completa, reformule sua pergunta focando em aspectos pedagógicos da educação afro-brasileira."
-        ];
-        
-        const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-        
-        console.log("🔄 Retornando resposta de fallback:", randomResponse);
-        
+        // Resposta de fallback para erros de rede
         return {
-            statusCode: 200, // Retorna 200 mesmo com erro para não quebrar o frontend
+            statusCode: 200,
             headers,
             body: JSON.stringify({ 
-                status: "success", 
-                resposta: randomResponse 
+                status: "error", 
+                resposta: "Erro de conexão com o serviço de IA. Verifique sua conexão e tente novamente." 
             })
         };
     }
