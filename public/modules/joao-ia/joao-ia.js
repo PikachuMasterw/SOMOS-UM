@@ -376,7 +376,26 @@
       let response;
 
       try {
-        response = await this.sendToBackend(message);
+        // Preparar contexto da conversa
+        const conversationContext = this.getConversationContext();
+
+        // Se for uma pergunta de contexto, anexar informação adicional
+        let enhancedMessage = message;
+        const lowerMessage = message.toLowerCase();
+
+        if (
+          lowerMessage.includes("outros") ||
+          lowerMessage.includes("além") ||
+          lowerMessage.includes("também") ||
+          lowerMessage.includes("mais")
+        ) {
+          enhancedMessage = this.enhanceContextualQuestion(
+            message,
+            conversationContext
+          );
+        }
+
+        response = await this.sendToBackend(enhancedMessage);
       } catch (error) {
         console.error("Erro no backend:", error);
         response = this.getLocalResponse(message);
@@ -386,6 +405,35 @@
 
       // Mostrar sugestões relacionadas após resposta
       this.showRelatedSuggestions(message);
+    },
+
+    // Nova função para melhorar perguntas contextuais
+    enhanceContextualQuestion: function (question, context) {
+      // Analisar as últimas mensagens para contexto
+      const lastMessages = this.messages.slice(-4); // Últimas 4 mensagens
+
+      for (let i = lastMessages.length - 1; i >= 0; i--) {
+        const msg = lastMessages[i];
+        if (!msg.isUser) {
+          // Se a última resposta do bot mencionou algum tópico
+          if (msg.text.toLowerCase().includes("zumbi")) {
+            return `Continuando sobre história afro-brasileira, ${question}`;
+          } else if (msg.text.toLowerCase().includes("lei")) {
+            return `Sobre legislação educacional, ${question}`;
+          }
+        }
+      }
+
+      return question;
+    },
+
+    getConversationContext: function () {
+      // Retorna contexto da conversa atual
+      const recentMessages = this.messages.slice(-3);
+      return recentMessages.map((m) => ({
+        role: m.isUser ? "user" : "assistant",
+        content: m.text,
+      }));
     },
     sendToBackend: async function (userMessage) {
       console.log("🔄 Enviando para IA:", userMessage);
