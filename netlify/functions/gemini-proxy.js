@@ -1,27 +1,13 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO FINAL - Usando IA REAL com Gemini
-
-// Configuração da API
-const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-
-// Prompt de sistema otimizado para respostas curtas
-const SYSTEM_PROMPT = `Você é João, assistente pedagógico da plataforma "Somos Um".
-Foco: educação sobre cultura afro-brasileira e Lei 10.639/2003.
-
-DIRETRIZES:
-1. Seja DIRETO (máximo 3-4 frases)
-2. Foque em ASPECTOS PRÁTICOS para sala de aula
-3. Sugira 1-2 recursos ou atividades
-4. Adapte para nível de ensino quando mencionado
-5. Sem formatação, apenas texto simples
-
-EXEMPLO DE RESPOSTA IDEAL:
-"Para Zumbi no 7º ano: analise documentos históricos sobre Palmares, debate sobre resistência. Recurso: documentário Quilombo (1984)."
-
-Agora responda à pergunta:`;
+// VERSÃO 3.0: Usa 'fetch' nativo (sem npm install) para integrar o Gemini
+// Assume que GEMINI_API_KEY está configurada no Netlify
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - SISTEMA ATIVO ===");
+    console.log("=== JOÃO IA - SISTEMA ATIVO (v3.0 - fetch) ===");
+    
+    // Configurações da API Gemini
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
     
     const headers = {
         'Access-Control-Allow-Origin': '*',
@@ -47,7 +33,9 @@ exports.handler = async (event, context) => {
         
         const lower = prompt.toLowerCase().trim();
         
-        // ========== RESPOSTAS RÁPIDAS ==========
+        // ===================================
+        // ========== 2. RESPOSTAS RÁPIDAS (SUAS REGRAS) ==========
+        // ===================================
         
         // Saudações
         if (["oi", "olá", "ola", "bom dia", "boa tarde", "boa noite"].includes(lower)) {
@@ -89,102 +77,130 @@ exports.handler = async (event, context) => {
             }
         }
         
-        // ========== USAR IA REAL ==========
-        
-        const API_KEY = process.env.GEMINI_API_KEY;
-        
-        if (!API_KEY) {
-            console.log("⚠️ Sem API_KEY, usando fallback");
-            
-            // Fallback inteligente para testes
-            let respostaFallback = "Para uma resposta completa, configure a API_KEY. ";
-            
-            if (lower.includes("zumbi")) {
-                respostaFallback += "Zumbi: líder de Palmares, resistência negra. Para aulas: documentário Quilombo, análise de documentos.";
-            } else if (lower.includes("lei 10.639") || lower.includes("lei 10639")) {
-                respostaFallback += "Lei 10.639: ensino obrigatório da cultura afro-brasileira. Implemente com projetos interdisciplinares.";
-            } else if (lower.includes("capoeira")) {
-                respostaFallback += "Capoeira: arte marcial afro-brasileira. Atividade: aula prática com mestre convidado.";
-            } else {
-                respostaFallback += "Especifique: nível de ensino e tema (ex: 'Zumbi para 8º ano' ou 'atividade sobre capoeira').";
-            }
-            
+        // Temas principais
+        if (lower.includes("zumbi")) {
             return {
                 statusCode: 200,
                 headers,
-                body: JSON.stringify({ status: "success", resposta: respostaFallback })
+                body: JSON.stringify({
+                    status: "success",
+                    resposta: "Zumbi: líder do Quilombo dos Palmares (século XVII). Para aulas: contação de histórias (Fundamental I), análise de documentos (Fundamental II), debate sobre memória histórica (Médio). Recurso: documentário 'Quilombo' (1984)."
+                })
             };
         }
         
-        // Chamar API Gemini
-        const fullEndpoint = `${GEMINI_ENDPOINT}?key=${API_KEY}`;
+        if (lower.includes("lei 10.639") || lower.includes("lei 10639")) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: "success",
+                    resposta: "Lei 10.639/2003: ensino obrigatório da cultura afro-brasileira. Implementação: formação docente, materiais inclusivos, projetos interdisciplinares. Recurso: Coleção História Geral da África (UNESCO)."
+                })
+            };
+        }
         
-        const response = await fetch(fullEndpoint, {
+        if (lower.includes("capoeira")) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: "success",
+                    resposta: "Capoeira: arte marcial afro-brasileira. Para aula: contextualização histórica (diáspora africana), oficina prática (movimentos básicos), discussão sobre patrimônio cultural imaterial."
+                })
+            };
+        }
+        
+        if (lower.includes("umbanda") || lower.includes("candomblé") || lower.includes("candomble")) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: "success",
+                    resposta: "Religiões afro-brasileiras: abordagem com respeito à diversidade religiosa. Atividade: estudo da influência na cultura brasileira (música, culinária, festas). Recurso: livro 'Orixás' de Pierre Verger."
+                })
+            };
+        }
+        
+        // Se perguntar sobre outros líderes
+        if (lower.includes("outros líderes") || lower.includes("outras figuras") || 
+            lower.includes("além de zumbi") || lower.includes("também")) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: "success",
+                    resposta: "Outros líderes: Dandara (guerreira de Palmares), Luiza Mahin (Revolta dos Malês), Luiz Gama (abolicionista), Carolina Maria de Jesus (escritora). Atividade: linha do tempo comparativa das formas de resistência."
+                })
+            };
+        }
+        
+        // ===================================
+        // ========== 3. FALLBACK PARA GOOGLE GEMINI (VIA fetch) ==========
+        // ===================================
+
+        // 1. Definição da Persona (System Instruction)
+        const systemInstruction = `Você é o João, um assistente pedagógico especializado no ensino de cultura afro-brasileira e na Lei 10.639/2003. Seja didático, objetivo e forneça exemplos de aplicação em sala de aula (ex: Fundamental I, Fundamental II, Ensino Médio).`;
+
+        // 2. Montagem do Corpo da Requisição
+        const requestBody = {
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.7 
+            }
+        };
+
+        // 3. Chamada à API
+        const fetchResponse = await fetch(API_ENDPOINT, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: SYSTEM_PROMPT + "\n\nPERGUNTA: " + prompt
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 250, // Respostas curtas
-                    topP: 0.8,
-                    topK: 40
-                }
-            })
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody)
         });
-        
-        if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+
+        const apiData = await fetchResponse.json();
+
+        // 4. Tratamento de Erro da API
+        if (!fetchResponse.ok || apiData.error) {
+            console.error("💥 Erro da API Gemini:", apiData.error ? apiData.error.message : fetchResponse.statusText);
+            
+            // Retorna a sugestão de formatação como fallback em caso de falha da API
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: "success",
+                    resposta: "Desculpe, a IA está indisponível. Para uma resposta mais precisa, especifique: 1) Nível de ensino 2) Tema específico 3) Tipo de ajuda. Exemplo: 'Plano sobre capoeira para Ensino Médio'."
+                })
+            };
         }
-        
-        const data = await response.json();
-        let resposta = data.candidates?.[0]?.content?.parts?.[0]?.text || 
-                      "Não consegui gerar uma resposta. Reformule sua pergunta.";
-        
-        // Limitar tamanho
-        if (resposta.length > 500) {
-            resposta = resposta.substring(0, 497) + "...";
-        }
-        
-        console.log("🤖 Resposta IA:", resposta.length, "caracteres");
-        
+
+        // 5. Extração da Resposta
+        const iaResposta = apiData.candidates[0].content.parts[0].text.trim();
+
+        console.log("✅ Resposta Gemini:", iaResposta.substring(0, 100) + "...");
+
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify({ status: "success", resposta })
+            body: JSON.stringify({
+                status: "success",
+                resposta: iaResposta 
+            })
         };
 
     } catch (error) {
-        console.error("💥 Erro:", error.message);
-        
-        // Fallback para erros
-        let fallback = "Sistema temporariamente indisponível. ";
-        
-        try {
-            const { prompt } = JSON.parse(event.body || '{}');
-            const lower = prompt.toLowerCase();
-            
-            if (lower.includes("zumbi")) {
-                fallback += "Zumbi dos Palmares: líder quilombola, resistência à escravidão. Recurso: Parque Memorial Quilombo dos Palmares.";
-            } else if (lower.includes("lei")) {
-                fallback += "Lei 10.639/2003: ensino obrigatório da cultura afro-brasileira. Implemente com materiais da UNESCO.";
-            } else {
-                fallback += "Tente novamente em instantes ou especifique sua pergunta.";
-            }
-        } catch (e) {
-            fallback = "Olá! Sou João, da plataforma Somos Um. Posso ajudar com educação sobre cultura afro-brasileira. Digite sua pergunta.";
-        }
+        // Erro genérico na execução da função (ex: JSON mal formatado)
+        console.error("💥 Erro capturado na função:", error.message);
         
         return {
-            statusCode: 200,
+            statusCode: 500,
             headers,
             body: JSON.stringify({ 
-                status: "success", 
-                resposta: fallback 
+                status: "error", 
+                resposta: "Desculpe, houve um erro interno na função. Tente novamente." 
             })
         };
     }
