@@ -1,20 +1,20 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO QUE REALMENTE USA GEMINI - 5 DE DEZEMBRO 2025
+// VERSÃO PARA CONTA GRATUITA DO GEMINI
 
 const API_KEY = process.env.GEMINI_API_KEY;
 
-// Gemini 1.5 Flash (estável) - VERIFIQUE SE ESTÁ ATIVA NO GOOGLE AI STUDIO!
-const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+// MODELO GRATUITO DISPONÍVEL: gemini-1.0-pro (gratuito com limites)
+const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=" + API_KEY;
 
-// PROMPT SIMPLES E EFETIVO
+// PROMPT SIMPLES PARA ECONOMIZAR TOKENS
 const SYSTEM_PROMPT = `Você é João, assistente pedagógico da plataforma "Somos Um".
-Especialista em educação sobre cultura afro-brasileira e Lei 10.639/2003.
-Responda de forma didática e prática para professores.
-Seja conciso (150-300 palavras).
-Sempre sugira uma atividade ou recurso para sala de aula.`;
+Foco: educação sobre cultura afro-brasileira e Lei 10.639/2003.
+Responda de forma prática para professores.
+Máximo: 150 palavras.
+Sugira uma atividade para sala de aula.`;
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - VERSÃO GEMINI ATIVADA ===");
+    console.log("=== JOÃO IA - CONTA GRATUITA ===");
     
     const headers = {
         'Access-Control-Allow-Origin': '*',
@@ -38,31 +38,23 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // ========== VERIFICAÇÃO CRÍTICA DA API_KEY ==========
-        console.log("🔑 Verificando API_KEY...");
-        
         if (!API_KEY) {
-            console.error("❌ API_KEY NÃO CONFIGURADA no Netlify!");
+            console.error("❌ API_KEY não configurada");
             return {
                 statusCode: 500,
                 headers,
                 body: JSON.stringify({ 
                     status: "error", 
-                    resposta: "Erro de configuração: API KEY não encontrada." 
+                    resposta: "Erro de configuração do servidor." 
                 })
             };
         }
         
-        // Log seguro da chave
-        console.log("🔐 API_KEY comprimento:", API_KEY.length);
-        console.log("🔐 API_KEY inicia com:", API_KEY.substring(0, 10));
-        
         const lowerPrompt = prompt.toLowerCase().trim();
         
-        // ========== SAUDAÇÕES (sempre local) ==========
-        const saudacoesExatas = ['oi', 'olá', 'ola'];
-        if (saudacoesExatas.some(s => lowerPrompt === s)) {
-            console.log("⚡ Saudação exata, respondendo local");
+        // ========== RESPOSTAS LOCAIS PRINCIPAIS ==========
+        // Saudações
+        if (lowerPrompt === 'oi' || lowerPrompt === 'olá' || lowerPrompt === 'ola') {
             return {
                 statusCode: 200,
                 headers,
@@ -73,10 +65,33 @@ exports.handler = async (event, context) => {
             };
         }
         
-        // ========== PERGUNTAS FORA DO ESCOPO (sempre local) ==========
-        const foraEscopo = ['guerra', 'conflito', 'tribo africana', 'amazônia', 'amazonia', 'desmatamento'];
-        if (foraEscopo.some(p => lowerPrompt.includes(p))) {
-            console.log("⚡ Fora do escopo, redirecionando local");
+        // Sugestões do chat (emojis)
+        const sugestoes = {
+            '👨‍🏫': "**Módulo Educador** - Recursos para professores:\n• Plano de Aula IA: Criação de planos sobre cultura afro-brasileira\n• Calendário de Datas: Datas importantes\n• Central de Downloads: Materiais didáticos\n• Cartilhas Educativas: Para diferentes níveis",
+            '📋': "**Plano de Aula IA** - Posso ajudar na criação de planos sobre:\n• História e cultura afro-brasileira\n• Personalidades importantes\n• Manifestações culturais\n• Implementação da Lei 10.639/2003",
+            '🎓': "**Módulo Estudante** - Recursos para aprendizado:\n• Módulos de Estudo: Conteúdo temático\n• Quiz & Testes: Preparação para vestibulares\n• Glossário: Termos importantes\n• Biblioteca Digital: Livros, artigos, vídeos",
+            '🧠': "**Quiz & Testes** - Avaliação de conhecimento:\n• Baseado em questões de vestibulares\n• Foco em história e cultura afro-brasileira\n• Personalidades importantes\n• Lei 10.639/2003",
+            '📚': "**Biblioteca Digital** - Acervo completo:\n• Livros: Autores como Conceição Evaristo\n• Artigos Científicos: Pesquisas atuais\n• Vídeos: Documentários, entrevistas\n• Referências: Materiais para pesquisa",
+            '⚖️': "**Lei 10.639/2003** - Torna obrigatório o ensino de história e cultura afro-brasileira.\n\nImplementação:\n1. Formação docente\n2. Materiais didáticos inclusivos\n3. Projetos interdisciplinares\n4. Datas comemorativas",
+            '🌐': "**Plataforma Somos Um** - Missão:\nCongregar artigos científicos sobre história e cultura afro-brasileira.\n\nMódulos: Educador, Estudante, Biblioteca, Comunidade.\n\nFoco: Implementação da Lei 10.639/2003."
+        };
+        
+        // Verificar se é uma sugestão (emoji)
+        for (const [emoji, resposta] of Object.entries(sugestoes)) {
+            if (prompt.includes(emoji)) {
+                console.log(`⚡ Resposta para sugestão ${emoji}`);
+                return {
+                    statusCode: 200,
+                    headers,
+                    body: JSON.stringify({ status: "success", resposta })
+                };
+            }
+        }
+        
+        // Perguntas fora do escopo
+        if (lowerPrompt.includes('guerra') || lowerPrompt.includes('conflito') || 
+            lowerPrompt.includes('tribo') || lowerPrompt.includes('amazônia') || 
+            lowerPrompt.includes('amazonia') || lowerPrompt.includes('desmatamento')) {
             return {
                 statusCode: 200,
                 headers,
@@ -87,19 +102,17 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // ========== AGORA SIM: TENTAR GEMINI ==========
-        console.log("🚀 PREPARANDO PARA CHAMAR GEMINI...");
-        console.log("🔗 Endpoint:", GEMINI_ENDPOINT.replace(API_KEY, "API_KEY_OCULTADA"));
+        // ========== TENTAR GEMINI GRATUITO ==========
+        console.log("🚀 Tentando Gemini 1.0 Pro (gratuito)...");
         
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
-            console.log("⏰ Timeout após 15 segundos");
+            console.log("⏰ Timeout após 5 segundos");
             controller.abort();
-        }, 15000);
+        }, 5000);
 
         try {
             const startTime = Date.now();
-            console.log("🔄 Enviando requisição para Gemini...");
             
             const geminiResponse = await fetch(GEMINI_ENDPOINT, {
                 method: 'POST',
@@ -116,7 +129,7 @@ exports.handler = async (event, context) => {
                     }],
                     generationConfig: {
                         temperature: 0.7,
-                        maxOutputTokens: 800,
+                        maxOutputTokens: 500,  // Reduzido para conta gratuita
                         topP: 0.8,
                         topK: 40
                     }
@@ -127,17 +140,16 @@ exports.handler = async (event, context) => {
             clearTimeout(timeoutId);
             const responseTime = Date.now() - startTime;
             console.log(`⏱️  Gemini respondeu em ${responseTime}ms`);
-            console.log(`📊 Status HTTP: ${geminiResponse.status} ${geminiResponse.statusText}`);
+            console.log(`📊 Status HTTP: ${geminiResponse.status}`);
 
             if (geminiResponse.ok) {
                 const data = await geminiResponse.json();
-                console.log("✅ Resposta Gemini recebida");
-                console.log("📦 Estrutura da resposta:", Object.keys(data));
+                console.log("✅ Gemini respondeu com sucesso");
                 
                 let resposta = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
                 
-                if (resposta && resposta.length > 50) {
-                    console.log(`✍️ Resposta Gemini (${resposta.length} chars):`, resposta.substring(0, 200) + "...");
+                if (resposta && resposta.length > 30) {
+                    console.log(`✍️ Resposta Gemini (${resposta.length} chars)`);
                     
                     // Limpar formatação
                     resposta = resposta
@@ -151,8 +163,7 @@ exports.handler = async (event, context) => {
                         body: JSON.stringify({ status: "success", resposta })
                     };
                 } else {
-                    console.warn("⚠️ Resposta Gemini muito curta ou vazia");
-                    console.warn("📄 Dados completos:", JSON.stringify(data).substring(0, 300));
+                    console.warn("⚠️ Resposta Gemini muito curta");
                 }
             } else {
                 const errorText = await geminiResponse.text();
@@ -161,31 +172,40 @@ exports.handler = async (event, context) => {
             
         } catch (fetchError) {
             clearTimeout(timeoutId);
-            if (fetchError.name === 'AbortError') {
-                console.error("⏰ TIMEOUT: Gemini não respondeu em 15 segundos");
-            } else {
-                console.error("❌ Erro na chamada fetch:", fetchError.message);
-            }
+            console.error("❌ Erro na chamada fetch:", fetchError.message);
         }
 
-        // ========== SE GEMINI FALHOU: FALLBACK LOCAL ==========
-        console.log("🔄 Gemini falhou, usando fallback local");
+        // ========== FALLBACK LOCAL INTELIGENTE ==========
+        console.log("🔄 Usando fallback local");
         
-        let respostaLocal;
-        
-        if (lowerPrompt.includes("zumbi") || lowerPrompt.includes("palmares")) {
-            respostaLocal = `Zumbi dos Palmares foi líder do Quilombo dos Palmares (século XVII), símbolo da resistência negra.
+        // Mapeamento de palavras-chave para respostas
+        if (lowerPrompt.includes('zumbi') || lowerPrompt.includes('palmares')) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: `Zumbi dos Palmares foi líder do Quilombo dos Palmares (século XVII), símbolo da resistência negra.
 
 Para aulas:
 • Fundamental I: Contação de história sobre quilombos
-• Fundamental II: Análise de documentos históricos
+• Fundamental II: Análise de documentos históricos  
 • Ensino Médio: Debate sobre memória histórica
 
-Recurso: Documentário "Quilombo" (1984).`;
+Recurso: Documentário "Quilombo" (1984).` 
+                })
+            };
         }
-        else if (lowerPrompt.includes("líder") || lowerPrompt.includes("lider") || 
-                 lowerPrompt.includes("equivalente") || lowerPrompt.includes("similar")) {
-            respostaLocal = `Além de Zumbi, outras lideranças importantes:
+        
+        if (lowerPrompt.includes('líder') || lowerPrompt.includes('lider') || 
+            lowerPrompt.includes('equivalente') || lowerPrompt.includes('similar') ||
+            lowerPrompt.includes('outros') || lowerPrompt.includes('outras')) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: `Além de Zumbi, outras lideranças importantes:
 
 1. Dandara - Guerreira de Palmares
 2. Aqualtune - Princesa africana
@@ -193,46 +213,97 @@ Recurso: Documentário "Quilombo" (1984).`;
 4. Luiz Gama - Abolicionista
 5. Carolina Maria de Jesus - Escritora
 
-Atividade: Linha do tempo da resistência negra.`;
+Atividade: Linha do tempo da resistência negra.` 
+                })
+            };
         }
-        else if (lowerPrompt.includes("lei") || lowerPrompt.includes("10.639")) {
-            respostaLocal = `Lei 10.639/2003 obriga ensino de História e Cultura Afro-Brasileira.
+        
+        if (lowerPrompt.includes('lei') || lowerPrompt.includes('10.639')) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: `Lei 10.639/2003 obriga ensino de História e Cultura Afro-Brasileira.
 
 Implementação:
 1. Formação docente
 2. Materiais didáticos inclusivos
 3. Projetos interdisciplinares
 
-Recurso: Coleção "História Geral da África" da UNESCO.`;
-        }
-        else {
-            respostaLocal = `Sobre "${prompt}", posso ajudar melhor se especificar:
-
-• Nível de ensino (Fundamental I, II, Médio)
-• Tema específico (história, cultura, literatura)
-• Tipo de ajuda (plano de aula, atividade, recurso)
-
-Exemplo: "Atividade sobre capoeira para o 6º ano"`;
+Recurso: Coleção "História Geral da África" da UNESCO.` 
+                })
+            };
         }
         
+        if (lowerPrompt.includes('umbanda') || lowerPrompt.includes('candomblé') || 
+            lowerPrompt.includes('candomble') || lowerPrompt.includes('religião')) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: `Umbanda é religião afro-brasileira que sincretiza elementos africanos, indígenas e cristãos.
+
+Abordagem pedagógica:
+• Respeito à diversidade religiosa
+• História da perseguição
+• Contribuições culturais
+
+Cuidado: Evitar estereótipos.` 
+                })
+            };
+        }
+        
+        if (lowerPrompt.includes('capoeira')) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: `Capoeira é arte marcial afro-brasileira.
+
+Para aula:
+• Contexto histórico
+• Oficina prática básica
+• Discussão sobre resistência cultural
+
+Sugestão: Convidar um mestre de capoeira.` 
+                })
+            };
+        }
+
+        // Fallback genérico
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({ 
                 status: "success", 
-                resposta: respostaLocal 
+                resposta: `Para uma resposta mais precisa sobre educação afro-brasileira, especifique:
+
+1. Nível de ensino (Fundamental I, II ou Médio)
+2. Tema específico (ex: história, literatura, música)
+3. Tipo de ajuda (plano de aula, atividade, recurso)
+
+Exemplo: "Atividade sobre capoeira para o 6º ano"
+
+Ou explore nossos módulos:
+• 👨‍🏫 Módulo Educador
+• 📋 Plano de Aula IA  
+• 🎓 Módulo Estudante
+• 📚 Biblioteca Digital` 
             })
         };
 
     } catch (error) {
-        console.error("💥 Erro geral no handler:", error);
+        console.error("💥 Erro geral:", error);
         
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({ 
                 status: "success", 
-                resposta: "Olá! Sou João da plataforma Somos Um. Como posso ajudá-lo com educação afro-brasileira?" 
+                resposta: "Olá! Sou João, assistente pedagógico da plataforma Somos Um. Como posso ajudá-lo com educação afro-brasileira?" 
             })
         };
     }
