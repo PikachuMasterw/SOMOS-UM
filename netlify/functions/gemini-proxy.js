@@ -1,8 +1,8 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO 4.1: Final. Corrige ordem dos IFs e o erro "config" da API Gemini.
+// VERSÃO 4.2: Final. Corrige ordem dos IFs e o erro "systemInstruction" da API Gemini.
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.1 - Produção) ===");
+    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.2 - FINAL) ===");
     
     // Configurações da API Gemini
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -85,7 +85,6 @@ exports.handler = async (event, context) => {
                 headers,
                 body: JSON.stringify({
                     status: "success",
-                    // CONTEÚDO CORRIGIDO: Agora menciona a legislação educacional.
                     resposta: "Além de Zumbi, destacam-se: Dandara (guerreira de Palmares), Luiza Mahin (Revolta dos Malês), Luiz Gama (abolicionista), e Carolina Maria de Jesus (escritora). Todos são essenciais para atender à Lei 10.639/2003. Sugestão: Crie um projeto 'Biografias da Resistência' para Ensino Fundamental II/Médio."
                 })
             };
@@ -144,11 +143,11 @@ exports.handler = async (event, context) => {
         // 1. Definição da Persona (System Instruction)
         const systemInstruction = `Você é o João, um assistente pedagógico especializado no ensino de cultura afro-brasileira e na Lei 10.639/2003. Seja didático, objetivo e forneça exemplos de aplicação em sala de aula (ex: Fundamental I, Fundamental II, Ensino Médio).`;
 
-        // 2. Montagem do Corpo da Requisição (CORRIGIDO: 'config' foi alterado para 'generationConfig')
+        // 2. Montagem do Corpo da Requisição (CORRIGIDO: 'systemInstruction' movido e renomeado para 'system_instruction')
         const requestBody = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
-            generationConfig: { // <--- CORREÇÃO CRÍTICA AQUI
-                systemInstruction: systemInstruction,
+            system_instruction: systemInstruction, // <--- CORREÇÃO APLICADA AQUI
+            generationConfig: { 
                 temperature: 0.7 
             }
         };
@@ -180,7 +179,6 @@ exports.handler = async (event, context) => {
         }
 
         // 5. Extração da Resposta
-        // A API de generateContent usa 'candidates'
         const iaResposta = apiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Não foi possível extrair a resposta da IA.";
 
         console.log("✅ Resposta Gemini:", iaResposta.substring(0, 100) + "...");
