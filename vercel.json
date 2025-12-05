@@ -2,7 +2,7 @@
   "builds": [
     {
       "src": "api/gemini-proxy.js",
-      "use": "@vercel/node@2.x", // CORRIGIDO para a versão correta do builder
+      "use": "@vercel/node@2.x",
       "config": {
         "memory": 1024,
         "maxDuration": 15
