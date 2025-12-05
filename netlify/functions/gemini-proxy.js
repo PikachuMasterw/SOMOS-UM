@@ -1,20 +1,121 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO PARA CONTA GRATUITA DO GEMINI
+// VERSÃO FINAL - 100% LOCAL, PERFEITA PARA APRESENTAÇÃO
 
-const API_KEY = process.env.GEMINI_API_KEY;
+const RESPOSTAS = {
+    // SAUDAÇÕES
+    "saudacao": "Olá! Sou João, assistente pedagógico da plataforma Somos Um. Especializado em educação sobre cultura afro-brasileira e Lei 10.639/2003. Como posso ajudá-lo?",
+    
+    // MÓDULOS DA PLATAFORMA
+    "educador": `**👨‍🏫 Módulo Educador** - Recursos completos para professores:
 
-// MODELO GRATUITO DISPONÍVEL: gemini-1.0-pro (gratuito com limites)
-const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=" + API_KEY;
+• **Plano de Aula IA**: Criação e melhoria de planos sobre cultura afro-brasileira
+• **Calendário de Datas**: Datas importantes da cultura afro-brasileira
+• **Central de Downloads**: Materiais didáticos prontos para uso
+• **Cartilhas Educativas**: Recursos para diferentes níveis de ensino
+• **Formação Docente**: Estratégias pedagógicas e gestão de sala de aula`,
+    
+    "plano_aula": `**📋 Plano de Aula IA** - Assistente especializado:
 
-// PROMPT SIMPLES PARA ECONOMIZAR TOKENS
-const SYSTEM_PROMPT = `Você é João, assistente pedagógico da plataforma "Somos Um".
-Foco: educação sobre cultura afro-brasileira e Lei 10.639/2003.
-Responda de forma prática para professores.
-Máximo: 150 palavras.
-Sugira uma atividade para sala de aula.`;
+Posso ajudar na criação de planos sobre:
+• História e cultura afro-brasileira
+• Personalidades importantes (Zumbi, Dandara, Luiz Gama)
+• Manifestações culturais (capoeira, samba, candomblé)
+• Implementação da Lei 10.639/2003
+
+Exemplo: "Preciso de um plano sobre Zumbi para o 7º ano"`,
+    
+    "estudante": `**🎓 Módulo Estudante** - Recursos para aprendizado:
+
+• **Módulos de Estudo**: Conteúdo temático organizado por temas
+• **Quiz & Testes**: Preparação para vestibulares com questões sobre cultura afro
+• **Glossário**: Termos importantes da história afro-brasileira
+• **Biblioteca Digital**: Livros, artigos, vídeos especializados
+• **Rastreamento de Progresso**: Acompanhamento do aprendizado`,
+    
+    "quiz": `**🧠 Quiz & Testes** - Avaliação de conhecimento:
+
+• Baseado em questões reais de vestibulares
+• Foco em história e cultura afro-brasileira
+• Personalidades importantes da resistência negra
+• Lei 10.639/2003 e suas implicações
+• Feedback imediato com explicações`,
+    
+    "biblioteca": `**📚 Biblioteca Digital** - Acervo completo:
+
+• **Livros**: Autores como Conceição Evaristo, Carolina Maria de Jesus
+• **Artigos Científicos**: Pesquisas atuais sobre estudos africanos
+• **Vídeos**: Documentários, entrevistas, aulas
+• **Referências**: Materiais para pesquisa acadêmica
+• **Categorias**: História, religião, literatura, arte`,
+    
+    "comunidade": `**👥 Módulo Comunidade** - Interação e engajamento:
+
+• **Feed de Posts**: Mural social para compartilhamento
+• **Mural de Eventos**: Próximos eventos da cultura afro-brasileira
+• **Conexões Rápidas**: Links para outros módulos da plataforma
+• **Espaço de Diálogo**: Discussões e troca de experiências
+
+Promove a interligação entre todas as áreas da plataforma!`,
+    
+    "voltar_menu": `**📋 MENU PRINCIPAL** - Escolha um módulo:
+
+• 👨‍🏫 **Módulo Educador** - Recursos para professores
+• 📋 **Plano de Aula IA** - Assistente para criação de planos
+• 🎓 **Módulo Estudante** - Materiais de estudo
+• 🧠 **Quiz & Testes** - Avaliação de conhecimento
+• 📚 **Biblioteca Digital** - Acervo completo
+• 👥 **Módulo Comunidade** - Interação
+• ⚖️ **Lei 10.639/03** - Legislação educacional
+• 🌐 **Sobre a plataforma** - Visão geral`,
+    
+    // TEMAS EDUCACIONAIS
+    "zumbi": `**Zumbi dos Palmares** - Líder da resistência negra:
+
+Zumbi foi líder do Quilombo dos Palmares (século XVII), maior símbolo da resistência negra à escravidão no Brasil.
+
+**Para diferentes níveis de ensino:**
+
+• **Fundamental I (1º-5º)**: Contação de história sobre quilombos como espaços de liberdade
+• **Fundamental II (6º-9º)**: Análise de documentos históricos, debate sobre resistência
+• **Ensino Médio**: Pesquisa sobre a Serra da Barriga, discussão sobre memória histórica
+
+**Recursos sugeridos:**
+- Documentário "Quilombo" (1984)
+- Livro "Palmares" de Décio Freitas
+- Site do Parque Memorial Quilombo dos Palmares`,
+    
+    "lei_10639": `**⚖️ Lei 10.639/2003** - Educação Étnico-Racial:
+
+Torna obrigatório o ensino de História e Cultura Afro-Brasileira em todas as escolas do país.
+
+**Implementação prática:**
+1. **Formação docente** - Capacitação continuada para professores
+2. **Materiais didáticos** - Livros, filmes, recursos inclusivos
+3. **Projetos interdisciplinares** - Literatura, história, arte, música
+4. **Datas comemorativas** - 20 de novembro (Dia da Consciência Negra)
+
+**Recursos:**
+- Coleção "História Geral da África" da UNESCO (8 volumes)
+- Diretrizes Curriculares Nacionais da Educação Étnico-Racial
+- Portal do MEC - Educação para as Relações Étnico-Raciais`,
+    
+    // RESPOSTA PARA PERGUNTAS NÃO RECONHECIDAS
+    "default": `Para uma resposta mais precisa, especifique:
+
+1. **Nível de ensino** (Fundamental I, II ou Médio)
+2. **Tema específico** (história, literatura, música, religião)
+3. **Tipo de ajuda** (plano de aula, atividade, recurso)
+
+**Exemplos:**
+- "Atividade sobre capoeira para o 6º ano"
+- "Plano de aula sobre Zumbi para o 8º ano"
+- "Recursos sobre umbanda para o Ensino Médio"
+
+**Ou explore nossos módulos clicando nas sugestões abaixo!**`
+};
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - CONTA GRATUITA ===");
+    console.log("=== JOÃO IA - SISTEMA LOCAL ===");
     
     const headers = {
         'Access-Control-Allow-Origin': '*',
@@ -37,261 +138,118 @@ exports.handler = async (event, context) => {
                 body: JSON.stringify({ status: "error", resposta: "Por favor, digite sua pergunta." }) 
             };
         }
-
-        if (!API_KEY) {
-            console.error("❌ API_KEY não configurada");
+        
+        const lower = prompt.toLowerCase().trim();
+        
+        // ========== DETECÇÃO INTELIGENTE ==========
+        
+        // Saudações exatas
+        if (lower === 'oi' || lower === 'olá' || lower === 'ola' || 
+            lower === 'bom dia' || lower === 'boa tarde' || lower === 'boa noite') {
             return {
-                statusCode: 500,
+                statusCode: 200,
                 headers,
-                body: JSON.stringify({ 
-                    status: "error", 
-                    resposta: "Erro de configuração do servidor." 
-                })
+                body: JSON.stringify({ status: "success", resposta: RESPOSTAS.saudacao })
             };
         }
         
-        const lowerPrompt = prompt.toLowerCase().trim();
-        
-        // ========== RESPOSTAS LOCAIS PRINCIPAIS ==========
-        // Saudações
-        if (lowerPrompt === 'oi' || lowerPrompt === 'olá' || lowerPrompt === 'ola') {
+        // Pergunta sobre nome/identidade
+        if (lower.includes('qual seu nome') || lower.includes('quem é você') || 
+            lower.includes('quem é voce') || lower.includes('seu nome')) {
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({ 
                     status: "success", 
-                    resposta: "Olá! Sou João, assistente pedagógico da plataforma Somos Um. Especializado em educação sobre cultura afro-brasileira e Lei 10.639/2003. Como posso ajudá-lo?" 
+                    resposta: "Eu sou o João, assistente virtual pedagógico da plataforma 'Somos Um - Cultura Afro-Brasileira'. Minha missão é ajudar educadores com recursos sobre história e cultura afro-brasileira e a implementação da Lei 10.639/2003." 
                 })
             };
         }
         
-        // Sugestões do chat (emojis)
-        const sugestoes = {
-            '👨‍🏫': "**Módulo Educador** - Recursos para professores:\n• Plano de Aula IA: Criação de planos sobre cultura afro-brasileira\n• Calendário de Datas: Datas importantes\n• Central de Downloads: Materiais didáticos\n• Cartilhas Educativas: Para diferentes níveis",
-            '📋': "**Plano de Aula IA** - Posso ajudar na criação de planos sobre:\n• História e cultura afro-brasileira\n• Personalidades importantes\n• Manifestações culturais\n• Implementação da Lei 10.639/2003",
-            '🎓': "**Módulo Estudante** - Recursos para aprendizado:\n• Módulos de Estudo: Conteúdo temático\n• Quiz & Testes: Preparação para vestibulares\n• Glossário: Termos importantes\n• Biblioteca Digital: Livros, artigos, vídeos",
-            '🧠': "**Quiz & Testes** - Avaliação de conhecimento:\n• Baseado em questões de vestibulares\n• Foco em história e cultura afro-brasileira\n• Personalidades importantes\n• Lei 10.639/2003",
-            '📚': "**Biblioteca Digital** - Acervo completo:\n• Livros: Autores como Conceição Evaristo\n• Artigos Científicos: Pesquisas atuais\n• Vídeos: Documentários, entrevistas\n• Referências: Materiais para pesquisa",
-            '⚖️': "**Lei 10.639/2003** - Torna obrigatório o ensino de história e cultura afro-brasileira.\n\nImplementação:\n1. Formação docente\n2. Materiais didáticos inclusivos\n3. Projetos interdisciplinares\n4. Datas comemorativas",
-            '🌐': "**Plataforma Somos Um** - Missão:\nCongregar artigos científicos sobre história e cultura afro-brasileira.\n\nMódulos: Educador, Estudante, Biblioteca, Comunidade.\n\nFoco: Implementação da Lei 10.639/2003."
-        };
+        // Módulos da plataforma (por emoji)
+        if (prompt.includes('👨‍🏫') || lower.includes('módulo educador') || lower.includes('modulo educador')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.educador }) };
+        }
+        if (prompt.includes('📋') || lower.includes('plano de aula')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.plano_aula }) };
+        }
+        if (prompt.includes('🎓') || lower.includes('módulo estudante') || lower.includes('modulo estudante')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.estudante }) };
+        }
+        if (prompt.includes('🧠') || lower.includes('quiz') || lower.includes('teste')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.quiz }) };
+        }
+        if (prompt.includes('📚') || lower.includes('biblioteca')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.biblioteca }) };
+        }
+        if (prompt.includes('👥') || lower.includes('comunidade') || lower.includes('voltar ao menu')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.comunidade }) };
+        }
+        if (prompt.includes('⚖️') || lower.includes('lei 10.639') || lower.includes('lei 10639')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.lei_10639 }) };
+        }
+        if (prompt.includes('🌐') || lower.includes('plataforma') || lower.includes('somos um')) {
+            return { 
+                statusCode: 200, 
+                headers, 
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: "**Plataforma 'Somos Um - Cultura Afro-Brasileira'**\n\n📚 Missão: Congregar artigos científicos consagrados e novas publicações sobre história e cultura afro-brasileira.\n\n🎯 Objetivo: Servir como espaço virtual de alta qualidade acadêmica para estudo, promoção e disseminação da Lei 10.639/03.\n\nMódulos: Educador, Estudante, Biblioteca, Comunidade." 
+                }) 
+            };
+        }
         
-        // Verificar se é uma sugestão (emoji)
-        for (const [emoji, resposta] of Object.entries(sugestoes)) {
-            if (prompt.includes(emoji)) {
-                console.log(`⚡ Resposta para sugestão ${emoji}`);
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ status: "success", resposta })
-                };
-            }
+        // Temas educacionais
+        if (lower.includes('zumbi') || lower.includes('palmares')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.zumbi }) };
+        }
+        if (lower.includes('lei') || lower.includes('10.639') || lower.includes('10639')) {
+            return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.lei_10639 }) };
+        }
+        if (lower.includes('umbanda') || lower.includes('candomblé') || lower.includes('candomble') || lower.includes('religião')) {
+            return { 
+                statusCode: 200, 
+                headers, 
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: "**Umbanda e Candomblé** - Religiões afro-brasileiras:\n\nAbordagem pedagógica recomendada:\n• Respeito à diversidade religiosa\n• Contexto histórico das religiões de matriz africana\n• Contribuições culturais (música, dança, culinária)\n• Enfrentamento ao preconceito religioso\n\nRecurso: Livro 'Orixás' de Pierre Verger" 
+                }) 
+            };
+        }
+        if (lower.includes('capoeira')) {
+            return { 
+                statusCode: 200, 
+                headers, 
+                body: JSON.stringify({ 
+                    status: "success", 
+                    resposta: "**Capoeira** - Arte marcial afro-brasileira:\n\nPara trabalhar em sala de aula:\n• Contexto histórico: diáspora africana e resistência cultural\n• Oficina prática: movimentos básicos (ginga, meia-lua)\n• Discussão: capoeira como patrimônio cultural imaterial\n\nSugestão: Convidar um mestre de capoeira para aula demonstrativa" 
+                }) 
+            };
         }
         
         // Perguntas fora do escopo
-        if (lowerPrompt.includes('guerra') || lowerPrompt.includes('conflito') || 
-            lowerPrompt.includes('tribo') || lowerPrompt.includes('amazônia') || 
-            lowerPrompt.includes('amazonia') || lowerPrompt.includes('desmatamento')) {
-            return {
-                statusCode: 200,
-                headers,
+        if (lower.includes('guerra') || lower.includes('conflito') || 
+            lower.includes('tribo') || lower.includes('amazônia') || 
+            lower.includes('amazonia') || lower.includes('desmatamento') ||
+            lower.includes('notícia') || lower.includes('noticia') || 
+            lower.includes('atualidade') || lower.includes('política')) {
+            return { 
+                statusCode: 200, 
+                headers, 
                 body: JSON.stringify({ 
                     status: "success", 
-                    resposta: "Para questões sobre atualidades, recomendo fontes especializadas. Como assistente pedagógico, posso ajudá-lo com temas educacionais relacionados à cultura afro-brasileira ou Lei 10.639/2003." 
-                })
-            };
-        }
-
-        // ========== TENTAR GEMINI GRATUITO ==========
-        console.log("🚀 Tentando Gemini 1.0 Pro (gratuito)...");
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => {
-            console.log("⏰ Timeout após 5 segundos");
-            controller.abort();
-        }, 5000);
-
-        try {
-            const startTime = Date.now();
-            
-            const geminiResponse = await fetch(GEMINI_ENDPOINT, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        role: "user",
-                        parts: [{ 
-                            text: SYSTEM_PROMPT + "\n\nPergunta do professor: " + prompt 
-                        }]
-                    }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 500,  // Reduzido para conta gratuita
-                        topP: 0.8,
-                        topK: 40
-                    }
-                }),
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-            const responseTime = Date.now() - startTime;
-            console.log(`⏱️  Gemini respondeu em ${responseTime}ms`);
-            console.log(`📊 Status HTTP: ${geminiResponse.status}`);
-
-            if (geminiResponse.ok) {
-                const data = await geminiResponse.json();
-                console.log("✅ Gemini respondeu com sucesso");
-                
-                let resposta = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-                
-                if (resposta && resposta.length > 30) {
-                    console.log(`✍️ Resposta Gemini (${resposta.length} chars)`);
-                    
-                    // Limpar formatação
-                    resposta = resposta
-                        .replace(/\*\*/g, '')
-                        .replace(/\*/g, '')
-                        .trim();
-                    
-                    return {
-                        statusCode: 200,
-                        headers,
-                        body: JSON.stringify({ status: "success", resposta })
-                    };
-                } else {
-                    console.warn("⚠️ Resposta Gemini muito curta");
-                }
-            } else {
-                const errorText = await geminiResponse.text();
-                console.error(`❌ Erro HTTP ${geminiResponse.status}:`, errorText.substring(0, 200));
-            }
-            
-        } catch (fetchError) {
-            clearTimeout(timeoutId);
-            console.error("❌ Erro na chamada fetch:", fetchError.message);
-        }
-
-        // ========== FALLBACK LOCAL INTELIGENTE ==========
-        console.log("🔄 Usando fallback local");
-        
-        // Mapeamento de palavras-chave para respostas
-        if (lowerPrompt.includes('zumbi') || lowerPrompt.includes('palmares')) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: `Zumbi dos Palmares foi líder do Quilombo dos Palmares (século XVII), símbolo da resistência negra.
-
-Para aulas:
-• Fundamental I: Contação de história sobre quilombos
-• Fundamental II: Análise de documentos históricos  
-• Ensino Médio: Debate sobre memória histórica
-
-Recurso: Documentário "Quilombo" (1984).` 
-                })
+                    resposta: "Para questões sobre atualidades ou temas específicos, recomendo consultar fontes especializadas. Como assistente pedagógico da plataforma Somos Um, posso ajudá-lo exclusivamente com temas educacionais relacionados à cultura afro-brasileira e implementação da Lei 10.639/2003." 
+                }) 
             };
         }
         
-        if (lowerPrompt.includes('líder') || lowerPrompt.includes('lider') || 
-            lowerPrompt.includes('equivalente') || lowerPrompt.includes('similar') ||
-            lowerPrompt.includes('outros') || lowerPrompt.includes('outras')) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: `Além de Zumbi, outras lideranças importantes:
-
-1. Dandara - Guerreira de Palmares
-2. Aqualtune - Princesa africana
-3. Luísa Mahin - Revolta dos Malês
-4. Luiz Gama - Abolicionista
-5. Carolina Maria de Jesus - Escritora
-
-Atividade: Linha do tempo da resistência negra.` 
-                })
-            };
-        }
-        
-        if (lowerPrompt.includes('lei') || lowerPrompt.includes('10.639')) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: `Lei 10.639/2003 obriga ensino de História e Cultura Afro-Brasileira.
-
-Implementação:
-1. Formação docente
-2. Materiais didáticos inclusivos
-3. Projetos interdisciplinares
-
-Recurso: Coleção "História Geral da África" da UNESCO.` 
-                })
-            };
-        }
-        
-        if (lowerPrompt.includes('umbanda') || lowerPrompt.includes('candomblé') || 
-            lowerPrompt.includes('candomble') || lowerPrompt.includes('religião')) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: `Umbanda é religião afro-brasileira que sincretiza elementos africanos, indígenas e cristãos.
-
-Abordagem pedagógica:
-• Respeito à diversidade religiosa
-• História da perseguição
-• Contribuições culturais
-
-Cuidado: Evitar estereótipos.` 
-                })
-            };
-        }
-        
-        if (lowerPrompt.includes('capoeira')) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: `Capoeira é arte marcial afro-brasileira.
-
-Para aula:
-• Contexto histórico
-• Oficina prática básica
-• Discussão sobre resistência cultural
-
-Sugestão: Convidar um mestre de capoeira.` 
-                })
-            };
-        }
-
-        // Fallback genérico
+        // Fallback padrão
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({ 
                 status: "success", 
-                resposta: `Para uma resposta mais precisa sobre educação afro-brasileira, especifique:
-
-1. Nível de ensino (Fundamental I, II ou Médio)
-2. Tema específico (ex: história, literatura, música)
-3. Tipo de ajuda (plano de aula, atividade, recurso)
-
-Exemplo: "Atividade sobre capoeira para o 6º ano"
-
-Ou explore nossos módulos:
-• 👨‍🏫 Módulo Educador
-• 📋 Plano de Aula IA  
-• 🎓 Módulo Estudante
-• 📚 Biblioteca Digital` 
+                resposta: RESPOSTAS.default 
             })
         };
 
@@ -303,7 +261,7 @@ Ou explore nossos módulos:
             headers,
             body: JSON.stringify({ 
                 status: "success", 
-                resposta: "Olá! Sou João, assistente pedagógico da plataforma Somos Um. Como posso ajudá-lo com educação afro-brasileira?" 
+                resposta: RESPOSTAS.saudacao 
             })
         };
     }
