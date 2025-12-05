@@ -1,9 +1,8 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO 3.0: Usa 'fetch' nativo (sem npm install) para integrar o Gemini
-// Assume que GEMINI_API_KEY está configurada no Netlify
+// VERSÃO 4.1: Final. Corrige ordem dos IFs e o erro "config" da API Gemini.
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - SISTEMA ATIVO (v3.0 - fetch) ===");
+    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.1 - Produção) ===");
     
     // Configurações da API Gemini
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -34,7 +33,7 @@ exports.handler = async (event, context) => {
         const lower = prompt.toLowerCase().trim();
         
         // ===================================
-        // ========== 2. RESPOSTAS RÁPIDAS (SUAS REGRAS) ==========
+        // ========== 2. RESPOSTAS RÁPIDAS (Lógica Prioritária) ==========
         // ===================================
         
         // Saudações
@@ -77,7 +76,22 @@ exports.handler = async (event, context) => {
             }
         }
         
-        // Temas principais
+        // CORREÇÃO DE ORDEM (1): Regra mais específica deve vir antes da mais genérica.
+        // Se perguntar sobre outros líderes (Inclui Zumbi na pergunta)
+        if (lower.includes("outros líderes") || lower.includes("outras figuras") || 
+            lower.includes("além de zumbi") || lower.includes("também")) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: "success",
+                    // CONTEÚDO CORRIGIDO: Agora menciona a legislação educacional.
+                    resposta: "Além de Zumbi, destacam-se: Dandara (guerreira de Palmares), Luiza Mahin (Revolta dos Malês), Luiz Gama (abolicionista), e Carolina Maria de Jesus (escritora). Todos são essenciais para atender à Lei 10.639/2003. Sugestão: Crie um projeto 'Biografias da Resistência' para Ensino Fundamental II/Médio."
+                })
+            };
+        }
+        
+        // CORREÇÃO DE ORDEM (2): Regra genérica sobre Zumbi
         if (lower.includes("zumbi")) {
             return {
                 statusCode: 200,
@@ -88,7 +102,8 @@ exports.handler = async (event, context) => {
                 })
             };
         }
-        
+
+        // Outros temas
         if (lower.includes("lei 10.639") || lower.includes("lei 10639")) {
             return {
                 statusCode: 200,
@@ -122,19 +137,6 @@ exports.handler = async (event, context) => {
             };
         }
         
-        // Se perguntar sobre outros líderes
-        if (lower.includes("outros líderes") || lower.includes("outras figuras") || 
-            lower.includes("além de zumbi") || lower.includes("também")) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({
-                    status: "success",
-                    resposta: "Outros líderes: Dandara (guerreira de Palmares), Luiza Mahin (Revolta dos Malês), Luiz Gama (abolicionista), Carolina Maria de Jesus (escritora). Atividade: linha do tempo comparativa das formas de resistência."
-                })
-            };
-        }
-        
         // ===================================
         // ========== 3. FALLBACK PARA GOOGLE GEMINI (VIA fetch) ==========
         // ===================================
@@ -142,10 +144,10 @@ exports.handler = async (event, context) => {
         // 1. Definição da Persona (System Instruction)
         const systemInstruction = `Você é o João, um assistente pedagógico especializado no ensino de cultura afro-brasileira e na Lei 10.639/2003. Seja didático, objetivo e forneça exemplos de aplicação em sala de aula (ex: Fundamental I, Fundamental II, Ensino Médio).`;
 
-        // 2. Montagem do Corpo da Requisição
+        // 2. Montagem do Corpo da Requisição (CORRIGIDO: 'config' foi alterado para 'generationConfig')
         const requestBody = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
-            config: {
+            generationConfig: { // <--- CORREÇÃO CRÍTICA AQUI
                 systemInstruction: systemInstruction,
                 temperature: 0.7 
             }
@@ -164,7 +166,7 @@ exports.handler = async (event, context) => {
 
         // 4. Tratamento de Erro da API
         if (!fetchResponse.ok || apiData.error) {
-            console.error("💥 Erro da API Gemini:", apiData.error ? apiData.error.message : fetchResponse.statusText);
+            console.error("💥 Erro da API Gemini:", apiData.error ? (apiData.error.message || fetchResponse.statusText) : fetchResponse.statusText);
             
             // Retorna a sugestão de formatação como fallback em caso de falha da API
             return {
@@ -172,13 +174,14 @@ exports.handler = async (event, context) => {
                 headers,
                 body: JSON.stringify({
                     status: "success",
-                    resposta: "Desculpe, a IA está indisponível. Para uma resposta mais precisa, especifique: 1) Nível de ensino 2) Tema específico 3) Tipo de ajuda. Exemplo: 'Plano sobre capoeira para Ensino Médio'."
+                    resposta: "Desculpe, a IA está indisponível. Tente novamente em instantes ou utilize as palavras-chave (Zumbi, Capoeira, Lei 10.639) para uma resposta rápida."
                 })
             };
         }
 
         // 5. Extração da Resposta
-        const iaResposta = apiData.candidates[0].content.parts[0].text.trim();
+        // A API de generateContent usa 'candidates'
+        const iaResposta = apiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Não foi possível extrair a resposta da IA.";
 
         console.log("✅ Resposta Gemini:", iaResposta.substring(0, 100) + "...");
 
