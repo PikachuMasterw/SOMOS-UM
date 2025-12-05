@@ -5,7 +5,7 @@
   // ========== CONFIGURAÇÕES GLOBAIS - ATUALIZADO PARA VERCEL (CORREÇÃO 404) ==========
   const VERCEL_BASE_URL = "https://somos-um-black.vercel.app"; 
   const REQUEST_ENDPOINT = VERCEL_BASE_URL + "/api/gemini-proxy";
-  const REQUEST_TIMEOUT = 15000;
+  const REQUEST_TIMEOUT = 15001;
 
   // ========== FUNÇÕES AUXILIARES ==========
   function hideTypingIndicator() {
