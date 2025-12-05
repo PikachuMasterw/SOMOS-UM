@@ -4,7 +4,6 @@
       "src": "api/gemini-proxy.js",
       "use": "@vercel/node@2.x",
       "config": {
-        "runtime": "nodejs20.x",
         "memory": 1024,
         "maxDuration": 15
       }
