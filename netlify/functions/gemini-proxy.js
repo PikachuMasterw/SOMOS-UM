@@ -84,6 +84,38 @@ Zumbi foi líder do Quilombo dos Palmares (século XVII), maior símbolo da resi
 - Livro "Palmares" de Décio Freitas
 - Site do Parque Memorial Quilombo dos Palmares`,
     
+    "lideres_equivalentes": `**Líderes equivalentes a Zumbi dos Palmares** - Outras figuras importantes da resistência negra:
+
+1. **Dandara dos Palmares** (século XVII)
+   - Companheira de Zumbi, guerreira e estratégica
+   - Liderou mulheres na defesa do quilombo
+   - Símbolo da resistência feminina negra
+
+2. **Luiza Mahin** (século XIX)
+   - Mãe de Luiz Gama, revolucionária
+   - Participou da Revolta dos Malês (1835)
+   - Líder nas insurreições de escravizados na Bahia
+
+3. **Luiz Gama** (1830-1882)
+   - Advogado, jornalista e poeta abolicionista
+   - Filho de Luiza Mahin, libertou mais de 500 escravos
+   - Fundador do movimento abolicionista paulista
+
+4. **André Rebouças** (1838-1898)
+   - Engenheiro, inventor e abolicionista
+   - Idealizador da campanha abolicionista
+   - Projetos de reforma agrária para libertos
+
+5. **Carolina Maria de Jesus** (1914-1977)
+   - Escritora, poeta e ativista
+   - Autora de "Quarto de Despejo"
+   - Voz da periferia e denúncia social
+
+**Atividade pedagógica:**
+- Compare diferentes líderes em períodos históricos distintos
+- Analise suas estratégias de resistência
+- Discuta como suas lutas se conectam com movimentos atuais`,
+    
     "lei_10639": `**⚖️ Lei 10.639/2003** - Educação Étnico-Racial:
 
 Torna obrigatório o ensino de História e Cultura Afro-Brasileira em todas as escolas do país.
@@ -201,6 +233,10 @@ exports.handler = async (event, context) => {
         
         // Temas educacionais
         if (lower.includes('zumbi') || lower.includes('palmares')) {
+            if (lower.includes('lideres equivalentes') || lower.includes('outros líderes') || 
+                lower.includes('outras figuras') || lower.includes('comparável')) {
+                return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.lideres_equivalentes }) };
+            }
             return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta: RESPOSTAS.zumbi }) };
         }
         if (lower.includes('lei') || lower.includes('10.639') || lower.includes('10639')) {
