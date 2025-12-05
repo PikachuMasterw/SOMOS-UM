@@ -1,9 +1,10 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (CORRIGIDO PARA VERCEL) ==========
 (function (global, document) {
   "use strict";
 
-  // ========== CONFIGURAÇÕES GLOBAIS ==========
-  const NETLIFY_ENDPOINT = "/.netlify/functions/gemini-proxy";
+  // ========== CONFIGURAÇÕES GLOBAIS - ATUALIZADO PARA VERCEL (CORREÇÃO 404) ==========
+  const VERCEL_BASE_URL = "https://somos-um-black.vercel.app"; 
+  const REQUEST_ENDPOINT = VERCEL_BASE_URL + "/netlify/functions/gemini-proxy";
   const REQUEST_TIMEOUT = 15000;
 
   // ========== FUNÇÕES AUXILIARES ==========
@@ -174,8 +175,7 @@
 
       container.innerHTML = `
                 <button class="joao-ia-toggle" aria-label="Abrir chat com ${this.config.botName}">
-                    <!-- Sem ícones, apenas background-image no CSS -->
-                </button>
+                    </button>
                 
                 <div class="joao-ia-window">
                     <div class="joao-ia-header">
@@ -438,9 +438,8 @@
     sendToBackend: async function (userMessage) {
       console.log("🔄 Enviando para IA:", userMessage);
 
-      // URL absoluta
-      const functionUrl =
-        window.location.origin + "/.netlify/functions/gemini-proxy";
+      // 🚨 CORREÇÃO CRÍTICA AQUI: Usa a URL absoluta configurada no topo
+      const functionUrl = REQUEST_ENDPOINT;
 
       const payload = JSON.stringify({ prompt: userMessage });
 
@@ -491,6 +490,7 @@
         }
       } catch (error) {
         console.error("❌ Erro:", error);
+        // Fallback para as respostas locais
         return this.getLocalResponse(userMessage);
       }
     },
