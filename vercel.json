@@ -1,9 +1,14 @@
 {
-  "functions": {
-    "api/gemini-proxy.js": {
-      "runtime": "vercel-internal-node@18_x"
+  "builds": [
+    {
+      "src": "api/gemini-proxy.js",
+      "use": "@vercel/node@18.x",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 15
+      }
     }
-  },
+  ],
   "rewrites": [
     {
       "source": "/api/gemini-proxy",
