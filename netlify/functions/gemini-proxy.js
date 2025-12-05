@@ -1,8 +1,8 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO 4.2: Final. Corrige ordem dos IFs e o erro "systemInstruction" da API Gemini.
+// VERSÃO 4.3: FINAL. Corrige a estrutura do objeto 'system_instruction' para o padrão REST.
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.2 - FINAL) ===");
+    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.3 - FINAL) ===");
     
     // Configurações da API Gemini
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -143,10 +143,13 @@ exports.handler = async (event, context) => {
         // 1. Definição da Persona (System Instruction)
         const systemInstruction = `Você é o João, um assistente pedagógico especializado no ensino de cultura afro-brasileira e na Lei 10.639/2003. Seja didático, objetivo e forneça exemplos de aplicação em sala de aula (ex: Fundamental I, Fundamental II, Ensino Médio).`;
 
-        // 2. Montagem do Corpo da Requisição (CORRIGIDO: 'systemInstruction' movido e renomeado para 'system_instruction')
+        // 2. Montagem do Corpo da Requisição (CORREÇÃO FINAL: 'system_instruction' é um objeto Content)
         const requestBody = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
-            system_instruction: systemInstruction, // <--- CORREÇÃO APLICADA AQUI
+            system_instruction: { // <--- CORREÇÃO CRÍTICA AQUI
+                role: "system",
+                parts: [{ text: systemInstruction }]
+            },
             generationConfig: { 
                 temperature: 0.7 
             }
