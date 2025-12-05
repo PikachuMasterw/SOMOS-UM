@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/gemini-proxy.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "vercel-internal-node@18_x"
     }
   },
   "rewrites": [
